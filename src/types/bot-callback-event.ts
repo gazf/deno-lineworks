@@ -8,7 +8,7 @@ export type CallbackEvent =
 
 export type CallbackEventType = CallbackEvent['content']['type'];
 
-export type MessageCallbackSource = {
+export type CallbackSource = {
   userId: string
   channelId?: string
   domainId: string 
@@ -16,7 +16,7 @@ export type MessageCallbackSource = {
 
 export type MessageCallbackEvent = {
   type: 'message'
-  source: MessageCallbackSource
+  source: CallbackSource
   issuedTime: string
 };
 
@@ -62,4 +62,58 @@ export type FileMessageCallbackEvent = MessageCallbackEvent & {
     type: 'file'
     fileId: string
   }
+};
+
+/** {@link https://developers.worksmobile.com/jp/docs/bot-callback-postback} */
+export type PostbackEvent = {
+  type: 'postback',
+  source: {
+    userId: string,
+    channelId: string,
+    domainId: number
+  },
+  issuedTime: string
+  data: string
+};
+
+/** {@link https://developers.worksmobile.com/jp/docs/bot-callback-join} */
+export type JoinEvent = {
+  type: 'join',
+  source: {
+    channelId: string,
+    domainId: number
+  },
+  issuedTime: string
+};
+
+/** {@link https://developers.worksmobile.com/jp/docs/bot-callback-leave} */
+export type LeaveEvent = {
+  type: 'leave',
+  source: {
+    channelId: string,
+    domainId: number
+  },
+  issuedTime: string
+};
+
+/** {@link https://developers.worksmobile.com/jp/docs/bot-callback-joined} */
+export type JoinedEvent = {
+  type: 'joined',
+  source: {
+    channelId: string,
+    domainId: number
+  },
+  issuedTime: string,
+  members: string[]
+};
+
+/** {@link https://developers.worksmobile.com/jp/docs/bot-callback-left} */
+export type LeftEvent = {
+  type: 'left',
+  source: {
+    channelId: string,
+    domainId: number
+  },
+  issuedTime: string,
+  members: string[]
 };
