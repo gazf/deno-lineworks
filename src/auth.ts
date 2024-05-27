@@ -1,16 +1,16 @@
-import { createJWT } from "./jwt.ts";
+import { createJWT } from './jwt.ts';
 import type {
   Env,
   Scope,
   IssueAccessTokenResponse,
-} from "./types.ts";
-import { AUTH_TOKEN_ENDPOINT, REVOKE_TOKEN_ENDPOINT } from "./endpoints.ts";
+} from './types.ts';
+import { AUTH_TOKEN_ENDPOINT, REVOKE_TOKEN_ENDPOINT } from './endpoints.ts';
 
 export interface AuthInterface {
   fetchAccessToken(): Promise<string | undefined>;
 }
 
-export class AuthContext {
+class AuthContext {
   private readonly raw: IssueAccessTokenResponse;
   private readonly issueDate: number
 
@@ -102,10 +102,10 @@ export class Auth implements AuthInterface {
 
     if (response === undefined) return undefined;
   
-    const info = await response.json() as IssueAccessTokenResponse;
-    info.expires_in = Number(info.expires_in);
+    const token = await response.json() as IssueAccessTokenResponse;
+    token.expires_in = Number(token.expires_in);
 
-    return info;
+    return token;
   }
 
   /** {@link https://developers.worksmobile.com/jp/docs/auth-oauth#refresh-access-token} */
@@ -121,10 +121,10 @@ export class Auth implements AuthInterface {
 
     if (response === undefined) return undefined;
   
-    const info = await response.json() as IssueAccessTokenResponse;
-    info.expires_in = Number(info.expires_in);
+    const token = await response.json() as IssueAccessTokenResponse;
+    token.expires_in = Number(token.expires_in);
 
-    return info;
+    return token;
   }
 
   /** {@link https://developers.worksmobile.com/jp/docs/auth-oauth#revoke-token} */
