@@ -11,7 +11,7 @@ export type IssueAccessTokenResponse = {
 export type Scope = 
   'audit.read' |
   'board' | 'board.read' |
-  'bot' | 'bot.read' |
+  'bot.message' | 'bot' | 'bot.read' |
   'calendar' | 'calendar.read' |
   'contact' | 'contact.read' |
   'file' | 'file.read' |
