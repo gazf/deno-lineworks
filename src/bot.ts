@@ -1,35 +1,40 @@
-import type { CallbackEvent, CallbackEventType, Message } from "./types.ts";
-import { BOT_ENDPOINT } from "./endpoints.ts";
-import { encodeBase64 } from "std/encoding/base64.ts";
-import { AuthInterface } from "./auth.ts";
-import { Context } from "./context.ts";
+import { encodeBase64 } from 'std/encoding/base64.ts';
+import type {
+  Message,
+  CallbackEvent,
+  CallbackEventType,
+  Destination
+} from './types.ts';
+import { BOT_ENDPOINT } from './endpoints.ts';
+import { AuthInterface } from './auth.ts';
+import { Context } from './context.ts';
 
-interface CallbackEventHandler<T extends CallbackEventType> {
-  (c: Context<T>): Promise<void>
-}
+type CallbackEventHandler<T extends CallbackEvent> =
+  (c: Context<T>) => Promise<void> | void;
 
-export type InferCallbackEvent<T extends CallbackEventType> = Extract<CallbackEvent, {content: {type: T}}>;
+type InferCallbackEvent<T extends CallbackEventType> = 
+  Extract<CallbackEvent, { type: T }>;
+
+export type SendInterface = (destination: Destination, to: string, message: Message) => Promise<Response>;
 
 export class Bot {
-  private readonly id: string;
-  private readonly secret: string;
-  private readonly auth: AuthInterface;
   private handlers: {
-    [K in CallbackEventType]?: CallbackEventHandler<K>
+    [K in CallbackEvent['type']]?: CallbackEventHandler<InferCallbackEvent<K>>;
   };
 
-  constructor(id: string, secret: string, auth: AuthInterface) {
-    this.id = id;
-    this.secret = secret;
-    this.auth = auth;
+  constructor(
+    private readonly id: string,
+    private readonly secret: string,
+    private readonly auth: AuthInterface
+  ) {
     this.handlers = {};
   }
 
-  async send(
-    destination: 'users' | 'channels',
+  send: SendInterface = async (
+    destination: Destination,
     to: string,
     message: Message
-  ) {
+  ) => {
     const token = await this.auth.fetchAccessToken();
     const url = `${BOT_ENDPOINT}${this.id}/${destination}/${to}/messages`;
     return fetch(url, {
@@ -42,18 +47,21 @@ export class Bot {
     });
   }
 
-  on<T extends CallbackEventType>(type: T, handler: CallbackEventHandler<T>) {
+  on<T extends CallbackEventType>(
+    type: T,
+    handler: CallbackEventHandler<InferCallbackEvent<T>> 
+  ) {
     // deno-lint-ignore no-explicit-any
-    this.handlers[type] = handler as CallbackEventHandler<any>;
+    this.handlers[type] = handler as any;
   }
 
-  private dispatch<
-    T extends CallbackEventType,
-    E extends InferCallbackEvent<T>>(type: T, e: E) 
-  {  
-    const handler = this.handlers[type];
-    if (handler !== undefined) 
-      return handler(new Context<T>(this, e));
+  private dispatch<T extends CallbackEvent>(e: T) {
+    const handler = this.handlers[e.type];
+    if (handler !== undefined) {
+      const ctx = new Context(this, e);
+      // deno-lint-ignore no-explicit-any
+      return handler(ctx as any);
+    };
   }
 
   // deno-lint-ignore no-explicit-any  no-unused-vars
@@ -76,8 +84,8 @@ export class Bot {
     if (botIdHeader !== this.id)
       return new Response('error', {status: 400});
 
-    const requestBody = await (new Response(request.body).text());
-    
+    const requestBody = await this.streamToString(request);
+
     const isValidRequest = await this.isValidSignature(signatureHeader, requestBody);
     if (!isValidRequest)
       return new Response('error', {status: 401});
@@ -86,10 +94,24 @@ export class Bot {
 
     // https://developers.worksmobile.com/jp/docs/bot-callback#callback-flow
     // Need to get a quick response back.
-    const _= this.dispatch(event.content.type, event);
+    const _= this.dispatch(event);
 
     return new Response('ok', {status: 200});
   };
+
+  private async streamToString(request: Request) {
+    const stream = request.body;
+    if (stream === null) return '';
+
+    const textStream = stream.pipeThrough(new TextDecoderStream());
+    const chunks: string[] = [];
+
+    for await (const chunk of textStream) {
+      chunks.push(chunk);
+    }
+
+    return chunks.join();
+  }
 
   private async isValidSignature(signatureHeader: string, requestBody: string) {
     const encoder = new TextEncoder();

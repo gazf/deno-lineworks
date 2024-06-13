@@ -1,5 +1,3 @@
-export type * from './types/env.ts'
-
 export type * from './types/bot-message.ts'
 export type * from './types/bot-callback-event.ts'
 

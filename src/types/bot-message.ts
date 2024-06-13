@@ -1,3 +1,5 @@
+export type Destination = 'users' | 'channels';
+
 /** {@link https://developers.worksmobile.com/jp/docs/bot-send-content} */
 export type Message = 
   TextMessage |

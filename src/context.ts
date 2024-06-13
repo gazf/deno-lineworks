@@ -1,19 +1,32 @@
-import { Bot, InferCallbackEvent } from "./bot.ts";
-import type { CallbackEventType, Message } from "./types.ts";
+import { SendInterface } from './bot.ts';
+import type {
+  Message,
+  CallbackEvent,
+  Destination
+} from './types.ts';
 
-export class Context<E extends CallbackEventType> {
+export class Context<T extends CallbackEvent> {
   constructor(
-    private readonly bot: Bot,
-    public readonly e: InferCallbackEvent<E>
+    private readonly app: { send: SendInterface },
+    public readonly e: T
   ) {}
 
-  send(destination: 'users' | 'channels', to: string, message: Message) {
-    this.bot.send(destination, to, message);
+  send(destination: Destination, to: string, message: Message) {
+    return this.app.send(destination, to, message);
   }
 
   reply(message: Message) {
-    const destination = this.e.source.channelId === undefined ? 'users' : 'channels';
-    const to = this.e.source.channelId ?? this.e.source.userId;
-    return this.bot.send(destination, to, message);
+    const { destination, to } = this.getDestination();
+    return this.app.send(destination, to, message);
+  }
+
+  private getDestination() {
+    const destination: Destination =
+      this.e.source.channelId === undefined ? 'users' : 'channels';
+    const to: string =
+      this.e.type === 'message' ?
+      this.e.source.channelId ?? this.e.source.userId :
+      this.e.source.channelId;
+    return { destination, to };
   }
 }

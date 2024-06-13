@@ -6,7 +6,7 @@ import type {
 } from './types.ts';
 import { AUTH_TOKEN_ENDPOINT, REVOKE_TOKEN_ENDPOINT } from './endpoints.ts';
 
-export interface AuthInterface {
+export type AuthInterface = {
   fetchAccessToken(): Promise<string | undefined>;
 }
 
@@ -141,6 +141,7 @@ export class Auth implements AuthInterface {
       console.error(response);
 
     this.c = undefined;
+    return response;
   }
 
   private async postRequest(endpoint: string, query: Record<string, string>) {

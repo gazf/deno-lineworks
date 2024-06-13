@@ -1,27 +1,33 @@
 /** {@link https://developers.worksmobile.com/jp/docs/bot-callback} */
-export type CallbackEvent = 
+export type CallbackEvent =
+  MessageCallbackEvent |
+  PostbackCallbackEvent |
+  JoinCallbackEvent |
+  LeaveCallbackEvent |
+  JoinedCallbackEvent |
+  LeftCallbackEvent;
+
+export type CallbackEventType = CallbackEvent['type'];
+
+export type MessageCallbackEvent = 
   TextMessageCallbackEvent |
   LocationMessageCallbackEvent |
   StickerMessageCallbackEvent |
   ImageMessageCallbackEvent |
-  FileMessageCallbackEvent
+  FileMessageCallbackEvent;
 
-export type CallbackEventType = CallbackEvent['content']['type'];
-
-export type CallbackSource = {
-  userId: string
-  channelId?: string
-  domainId: string 
-};
-
-export type MessageCallbackEvent = {
+export type MessageCallbackEventBase = {
   type: 'message'
-  source: CallbackSource
+  source: {
+    userId: string
+    channelId?: string
+    domainId: number 
+  }
   issuedTime: string
 };
 
 /** {@link https://developers.worksmobile.com/jp/docs/bot-callback-message#message-event-text} */
-export type TextMessageCallbackEvent = MessageCallbackEvent & {
+export type TextMessageCallbackEvent = MessageCallbackEventBase & {
   content: {
     type: 'text'
     text: string
@@ -30,7 +36,7 @@ export type TextMessageCallbackEvent = MessageCallbackEvent & {
 };
 
 /** {@link https://developers.worksmobile.com/jp/docs/bot-callback-message#message-event-location} */
-export type LocationMessageCallbackEvent = MessageCallbackEvent & {
+export type LocationMessageCallbackEvent = MessageCallbackEventBase & {
   content: {
     type: 'location'
     address: string
@@ -40,7 +46,7 @@ export type LocationMessageCallbackEvent = MessageCallbackEvent & {
 };
 
 /** {@link https://developers.worksmobile.com/jp/docs/bot-callback-message#message-event-sticker} */
-export type StickerMessageCallbackEvent = MessageCallbackEvent & {
+export type StickerMessageCallbackEvent = MessageCallbackEventBase & {
   content: {
     type: 'sticker'
     packageId: string
@@ -49,7 +55,7 @@ export type StickerMessageCallbackEvent = MessageCallbackEvent & {
 };
 
 /** {@link https://developers.worksmobile.com/jp/docs/bot-callback-message#message-event-image} */
-export type ImageMessageCallbackEvent = MessageCallbackEvent & {
+export type ImageMessageCallbackEvent = MessageCallbackEventBase & {
   content: {
     type: 'image'
     fileId: string
@@ -57,7 +63,7 @@ export type ImageMessageCallbackEvent = MessageCallbackEvent & {
 };
 
 /** {@link https://developers.worksmobile.com/jp/docs/bot-callback-message#message-event-file} */
-export type FileMessageCallbackEvent = MessageCallbackEvent & {
+export type FileMessageCallbackEvent = MessageCallbackEventBase & {
   content: {
     type: 'file'
     fileId: string
@@ -65,7 +71,7 @@ export type FileMessageCallbackEvent = MessageCallbackEvent & {
 };
 
 /** {@link https://developers.worksmobile.com/jp/docs/bot-callback-postback} */
-export type PostbackEvent = {
+export type PostbackCallbackEvent = {
   type: 'postback',
   source: {
     userId: string,
@@ -77,7 +83,7 @@ export type PostbackEvent = {
 };
 
 /** {@link https://developers.worksmobile.com/jp/docs/bot-callback-join} */
-export type JoinEvent = {
+export type JoinCallbackEvent = {
   type: 'join',
   source: {
     channelId: string,
@@ -87,7 +93,7 @@ export type JoinEvent = {
 };
 
 /** {@link https://developers.worksmobile.com/jp/docs/bot-callback-leave} */
-export type LeaveEvent = {
+export type LeaveCallbackEvent = {
   type: 'leave',
   source: {
     channelId: string,
@@ -97,7 +103,7 @@ export type LeaveEvent = {
 };
 
 /** {@link https://developers.worksmobile.com/jp/docs/bot-callback-joined} */
-export type JoinedEvent = {
+export type JoinedCallbackEvent = {
   type: 'joined',
   source: {
     channelId: string,
@@ -108,12 +114,12 @@ export type JoinedEvent = {
 };
 
 /** {@link https://developers.worksmobile.com/jp/docs/bot-callback-left} */
-export type LeftEvent = {
-  type: 'left',
+export type LeftCallbackEvent = {
+  type: 'left'
   source: {
-    channelId: string,
+    channelId: string
     domainId: number
   },
-  issuedTime: string,
+  issuedTime: string
   members: string[]
 };
