@@ -1,16 +1,16 @@
-import { createJWT } from './jwt.ts';
-import type { AuthEnv, Scope, IssueAccessTokenResponse } from './types.ts';
-import { AUTH_TOKEN_ENDPOINT, REVOKE_TOKEN_ENDPOINT } from './endpoints.ts';
+import { createJWT } from "./jwt.ts";
+import type { AuthEnv, IssueAccessTokenResponse, Scope } from "./types.ts";
+import { AUTH_TOKEN_ENDPOINT, REVOKE_TOKEN_ENDPOINT } from "./endpoints.ts";
 
 export type AuthInterface = {
   fetchAccessToken(): Promise<string | undefined>;
-}
+};
 
 class AuthContext {
   constructor(
     private readonly raw: IssueAccessTokenResponse,
-    private readonly issueDate: number
-  ) { }
+    private readonly issueDate: number,
+  ) {}
 
   get accessToken() {
     return this.raw.access_token;
@@ -21,8 +21,8 @@ class AuthContext {
   }
 
   get scopes() {
-    const scopes = this.raw.scope.split(' ');
-    return scopes as Scope[];;
+    const scopes = this.raw.scope.split(" ");
+    return scopes as Scope[];
   }
 
   static newContext(token: IssueAccessTokenResponse) {
@@ -46,8 +46,8 @@ export class Auth implements AuthInterface {
 
   constructor(
     private readonly env: AuthEnv,
-    private readonly scopes: Scope[]
-  ) { }
+    private readonly scopes: Scope[],
+  ) {}
 
   async fetchAccessToken() {
     if (this.c !== undefined) {
@@ -63,7 +63,7 @@ export class Auth implements AuthInterface {
         }
       }
     }
-    
+
     const token = await this.issueToken();
     if (token === undefined) return undefined;
 
@@ -73,7 +73,9 @@ export class Auth implements AuthInterface {
   }
 
   /** Use caching AuthContext */
-  get context() { return this.c; }
+  get context() {
+    return this.c;
+  }
   /** Use restore AuthContext */
   set context(c: AuthContext | undefined) {
     if (c === undefined) return;
@@ -86,14 +88,14 @@ export class Auth implements AuthInterface {
   private async issueToken() {
     const response = await this.postRequest(AUTH_TOKEN_ENDPOINT, {
       assertion: await createJWT(this.env),
-      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
       client_id: this.env.clientId,
       client_secret: this.env.clientSecret,
-      scope: this.scopes.join(' ')
+      scope: this.scopes.join(" "),
     });
 
     if (!response.ok) return undefined;
-  
+
     const token = await response.json() as IssueAccessTokenResponse;
     token.expires_in = Number(token.expires_in);
 
@@ -103,16 +105,16 @@ export class Auth implements AuthInterface {
   /** {@link https://developers.worksmobile.com/jp/docs/auth-oauth#refresh-access-token} */
   private async refreshToken() {
     if (this.c === undefined) return undefined;
-  
+
     const response = await this.postRequest(AUTH_TOKEN_ENDPOINT, {
       refresh_token: this.c.refreshToken,
-      grant_type: 'refresh_token',
+      grant_type: "refresh_token",
       client_id: this.env.clientId,
-      client_secret: this.env.clientSecret
+      client_secret: this.env.clientSecret,
     });
 
     if (!response.ok) return undefined;
-  
+
     const token = await response.json() as IssueAccessTokenResponse;
     token.expires_in = Number(token.expires_in);
 
@@ -126,11 +128,12 @@ export class Auth implements AuthInterface {
     const response = await this.postRequest(REVOKE_TOKEN_ENDPOINT, {
       client_id: this.env.clientId,
       client_secret: this.env.clientSecret,
-      token: this.c.refreshToken
+      token: this.c.refreshToken,
     });
-  
-    if (!response.ok)
+
+    if (!response.ok) {
       console.error(response);
+    }
 
     this.c = undefined;
     return response;
@@ -138,9 +141,9 @@ export class Auth implements AuthInterface {
 
   private postRequest(endpoint: string, query: Record<string, string>) {
     return fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(query)
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(query),
     });
   }
 }

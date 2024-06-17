@@ -1,135 +1,135 @@
 import type {
-  TextMessageCallbackEvent,
-  LocationMessageCallbackEvent,
-  StickerMessageCallbackEvent,
-  ImageMessageCallbackEvent,
   FileMessageCallbackEvent,
-  PostbackCallbackEvent,
+  ImageMessageCallbackEvent,
   JoinCallbackEvent,
-  LeaveCallbackEvent,
   JoinedCallbackEvent,
-  LeftCallbackEvent
-} from '../mod.ts';
+  LeaveCallbackEvent,
+  LeftCallbackEvent,
+  LocationMessageCallbackEvent,
+  PostbackCallbackEvent,
+  StickerMessageCallbackEvent,
+  TextMessageCallbackEvent,
+} from "../mod.ts";
 
 export const mockTextMessageCallbackEvent: TextMessageCallbackEvent = {
-  type: 'message',
+  type: "message",
   source: {
-    userId: '',
-    channelId: '',
-    domainId: 0
+    userId: "",
+    channelId: "",
+    domainId: 0,
   },
   content: {
-    type: 'text',
-    text: 'TEXT',
-    postback: ''
+    type: "text",
+    text: "TEXT",
+    postback: "",
   },
-  issuedTime: ''
+  issuedTime: "",
 };
 
 export const mockLocationMessageCallbackEvent: LocationMessageCallbackEvent = {
-  type: 'message',
+  type: "message",
   source: {
-    userId: '',
-    channelId: '',
-    domainId: 0
+    userId: "",
+    channelId: "",
+    domainId: 0,
   },
   content: {
-    type: 'location',
-    address: '',
+    type: "location",
+    address: "",
     latitude: 0,
-    longitude: 0
+    longitude: 0,
   },
-  issuedTime: ''
+  issuedTime: "",
 };
 
 export const mockStickerMessageCallbackEvent: StickerMessageCallbackEvent = {
-  type: 'message',
+  type: "message",
   source: {
-    userId: '',
-    channelId: '',
-    domainId: 0
+    userId: "",
+    channelId: "",
+    domainId: 0,
   },
   content: {
-    type: 'sticker',
-    packageId: '',
-    stickerId: ''
+    type: "sticker",
+    packageId: "",
+    stickerId: "",
   },
-  issuedTime: ''
+  issuedTime: "",
 };
 
 export const mockImageMessageCallbackEvent: ImageMessageCallbackEvent = {
-  type: 'message',
+  type: "message",
   source: {
-    userId: '',
-    channelId: '',
-    domainId: 0
+    userId: "",
+    channelId: "",
+    domainId: 0,
   },
   content: {
-    type: 'image',
-    fileId: ''
+    type: "image",
+    fileId: "",
   },
-  issuedTime: ''
+  issuedTime: "",
 };
 
 export const mockFileMessageCallbackEvent: FileMessageCallbackEvent = {
-  type: 'message',
+  type: "message",
   source: {
-    userId: '',
-    channelId: '',
-    domainId: 0
+    userId: "",
+    channelId: "",
+    domainId: 0,
   },
   content: {
-    type: 'file',
-    fileId: ''
+    type: "file",
+    fileId: "",
   },
-  issuedTime: ''
+  issuedTime: "",
 };
 
 export const mockPostbackCallbackEvent: PostbackCallbackEvent = {
-  type: 'postback',
+  type: "postback",
   source: {
-    userId: '',
-    channelId: '',
-    domainId: 0
+    userId: "",
+    channelId: "",
+    domainId: 0,
   },
-  issuedTime: '',
-  data: ''
+  issuedTime: "",
+  data: "",
 };
 
 export const mockJoinCallbackEvent: JoinCallbackEvent = {
-  type: 'join',
+  type: "join",
   source: {
-    channelId: '',
-    domainId: 0
+    channelId: "",
+    domainId: 0,
   },
-  issuedTime: ''
+  issuedTime: "",
 };
 
 export const mockLeaveCallbackEvent: LeaveCallbackEvent = {
-  type: 'leave',
+  type: "leave",
   source: {
-    channelId: '',
-    domainId: 0
+    channelId: "",
+    domainId: 0,
   },
-  issuedTime: ''
+  issuedTime: "",
 };
 
 export const mockJoinedCallbackEvent: JoinedCallbackEvent = {
-  type: 'joined',
+  type: "joined",
   source: {
-    channelId: '',
-    domainId: 0
+    channelId: "",
+    domainId: 0,
   },
-  issuedTime: '',
-  members: ['','','']
+  issuedTime: "",
+  members: ["", "", ""],
 };
 
 export const mockLeftCallbackEvent: LeftCallbackEvent = {
-  type: 'left',
+  type: "left",
   source: {
-    channelId: '',
-    domainId: 0
+    channelId: "",
+    domainId: 0,
   },
-  issuedTime: '',
-  members: ['','','']
+  issuedTime: "",
+  members: ["", "", ""],
 };

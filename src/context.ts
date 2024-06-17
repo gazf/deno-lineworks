@@ -1,14 +1,10 @@
-import { SendInterface } from './bot.ts';
-import type {
-  Message,
-  CallbackEvent,
-  Destination
-} from './types.ts';
+import { SendInterface } from "./bot.ts";
+import type { CallbackEvent, Destination, Message } from "./types.ts";
 
 export class Context<T extends CallbackEvent> {
   constructor(
     private readonly app: { send: SendInterface },
-    public readonly e: T
+    public readonly e: T,
   ) {}
 
   send(destination: Destination, to: string, message: Message) {
@@ -21,12 +17,12 @@ export class Context<T extends CallbackEvent> {
   }
 
   private getDestination() {
-    const destination: Destination =
-      this.e.source.channelId === undefined ? 'users' : 'channels';
-    const to: string =
-      this.e.type === 'message' ?
-      this.e.source.channelId ?? this.e.source.userId :
-      this.e.source.channelId;
+    const destination: Destination = this.e.source.channelId === undefined
+      ? "users"
+      : "channels";
+    const to: string = this.e.type === "message"
+      ? this.e.source.channelId ?? this.e.source.userId
+      : this.e.source.channelId;
     return { destination, to };
   }
 }

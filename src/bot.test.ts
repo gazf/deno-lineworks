@@ -1,216 +1,243 @@
-import { assertEquals } from 'std/assert/mod.ts';
-import { encodeBase64 } from 'std/encoding/base64.ts';
-import { stub } from 'std/testing/mock.ts';
+import { assertEquals } from "std/assert/mod.ts";
+import { encodeBase64 } from "std/encoding/base64.ts";
+import { stub } from "std/testing/mock.ts";
 import {
   mockFileMessageCallbackEvent,
   mockImageMessageCallbackEvent,
-  mockLocationMessageCallbackEvent,
-  mockStickerMessageCallbackEvent,
-  mockTextMessageCallbackEvent,
   mockJoinCallbackEvent,
   mockJoinedCallbackEvent,
   mockLeaveCallbackEvent,
-  mockLeftCallbackEvent
-} from './testdata/test.bot.ts';
+  mockLeftCallbackEvent,
+  mockLocationMessageCallbackEvent,
+  mockStickerMessageCallbackEvent,
+  mockTextMessageCallbackEvent,
+} from "./testdata/test.bot.ts";
 
-import { 
-  Bot,
-  AuthInterface,
-  CallbackEvent,
-  TextMessage
-} from './mod.ts';
+import { AuthInterface, Bot, CallbackEvent, TextMessage } from "./mod.ts";
 
 const createSignature = async (secret: string, body: string) => {
   const encoder = new TextEncoder();
   const keyBuffer = encoder.encode(secret);
   const key = crypto.subtle.importKey(
-    'raw',
+    "raw",
     keyBuffer,
-    { name: 'HMAC', hash: 'SHA-256' },
+    { name: "HMAC", hash: "SHA-256" },
     true,
-    ['sign']
+    ["sign"],
   );
 
   const bodyBuffer = encoder.encode(body);
-  const hmac = await crypto.subtle.sign('HMAC', await key, bodyBuffer.buffer);
+  const hmac = await crypto.subtle.sign("HMAC", await key, bodyBuffer.buffer);
   return encodeBase64(new Uint8Array(hmac));
 };
 
-const botId = '1111111111';
-const botSecret = 'abcdefghij'
+const botId = "1111111111";
+const botSecret = "abcdefghij";
 
 const mockAuth: AuthInterface = {
-  fetchAccessToken: () => new Promise((resolve) => {
-    resolve('DAMMY_ACCESS_TOKEN');
-  })
+  fetchAccessToken: () =>
+    new Promise((resolve) => {
+      resolve("DAMMY_ACCESS_TOKEN");
+    }),
 };
 
-Deno.test('Bot Class Send test', async (t) => {
+Deno.test("Bot Class Send test", async (t) => {
   const bot = new Bot(botId, botSecret, mockAuth);
-  
+
   await t.step({
-    name: 'Bot.send() users',
-    async fn(t) {
-      const fetchStub = stub(globalThis, 'fetch', () => Promise.resolve(new Response('', {status: 200})));
+    name: "Bot.send() users",
+    async fn() {
+      const fetchStub = stub(
+        globalThis,
+        "fetch",
+        () => Promise.resolve(new Response("", { status: 200 })),
+      );
 
       try {
-        const r = await bot.send('users', 'TO', { content: {
-          type: 'text',
-          text: 'TEXT'
-        }});
+        const r = await bot.send("users", "TO", {
+          content: {
+            type: "text",
+            text: "TEXT",
+          },
+        });
 
         assertEquals(r.ok, true);
       } finally {
         fetchStub.restore();
       }
-    }
+    },
   });
 
   await t.step({
-    name: 'Bot.send() channels',
-    async fn(t) {
-      const fetchStub = stub(globalThis, 'fetch', () => Promise.resolve(new Response('', {status: 200})));
+    name: "Bot.send() channels",
+    async fn() {
+      const fetchStub = stub(
+        globalThis,
+        "fetch",
+        () => Promise.resolve(new Response("", { status: 200 })),
+      );
 
       try {
-        const r = await bot.send('channels', 'TO', { content: {
-          type: 'text',
-          text: 'TEXT'
-        }});
+        const r = await bot.send("channels", "TO", {
+          content: {
+            type: "text",
+            text: "TEXT",
+          },
+        });
 
         assertEquals(r.ok, true);
       } finally {
         fetchStub.restore();
       }
-    }
-  })
+    },
+  });
 });
 
-Deno.test('Bot Class Callback test', async (t) => {
+Deno.test("Bot Class Callback test", async (t) => {
   const createRequest = async (e: CallbackEvent) => {
     const body = JSON.stringify(e);
-    return new Request('https://hogehoge.com/', {
-      method: 'POST',
+    return new Request("https://hogehoge.com/", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'X-WORKS-BotId': botId,
-        'X-WORKS-Signature': await createSignature(botSecret, body)
+        "Content-Type": "application/json",
+        "X-WORKS-BotId": botId,
+        "X-WORKS-Signature": await createSignature(botSecret, body),
       },
-      body: body
-    })
+      body: body,
+    });
   };
 
-  const fetchStub = stub(globalThis, 'fetch', () => Promise.resolve(new Response('', {status: 200})));
+  const fetchStub = stub(
+    globalThis,
+    "fetch",
+    () => Promise.resolve(new Response("", { status: 200 })),
+  );
 
   try {
     const bot = new Bot(botId, botSecret, mockAuth);
     const message: TextMessage = {
-      content: { type: 'text', text: 'HOGE' }
+      content: { type: "text", text: "HOGE" },
     };
 
-    bot.on('message', async c => {
-      switch(c.e.content.type) {
-        case 'text': 
+    bot.on("message", async (c) => {
+      switch (c.e.content.type) {
+        case "text":
           assertEquals(c.e, mockTextMessageCallbackEvent);
-          assertEquals((await c.reply(message)).ok, true); break;
-        case 'image':
+          assertEquals((await c.reply(message)).ok, true);
+          break;
+        case "image":
           assertEquals(c.e, mockImageMessageCallbackEvent);
-          assertEquals((await c.reply(message)).ok, true); break;
-        case 'sticker':
+          assertEquals((await c.reply(message)).ok, true);
+          break;
+        case "sticker":
           assertEquals(c.e, mockStickerMessageCallbackEvent);
-          assertEquals((await c.reply(message)).ok, true); break;
-        case 'location':
+          assertEquals((await c.reply(message)).ok, true);
+          break;
+        case "location":
           assertEquals(c.e, mockLocationMessageCallbackEvent);
-          assertEquals((await c.reply(message)).ok, true); break;
-        case 'file':
+          assertEquals((await c.reply(message)).ok, true);
+          break;
+        case "file":
           assertEquals(c.e, mockFileMessageCallbackEvent);
-          assertEquals((await c.reply(message)).ok, true); break;
+          assertEquals((await c.reply(message)).ok, true);
+          break;
       }
     });
 
-    bot.on('join', async c => { 
+    bot.on("join", async (c) => {
       assertEquals(c.e, mockJoinCallbackEvent);
-      assertEquals((await c.reply(message)).ok, true); 
+      assertEquals((await c.reply(message)).ok, true);
     });
-    bot.on('leave', async c => {
+    bot.on("leave", async (c) => {
       assertEquals(c.e, mockLeaveCallbackEvent);
       assertEquals((await c.reply(message)).ok, true);
     });
-    bot.on('joined', async c => {
+    bot.on("joined", async (c) => {
       assertEquals(c.e, mockJoinedCallbackEvent);
-      assertEquals((await c.reply(message)).ok, true); 
+      assertEquals((await c.reply(message)).ok, true);
     });
-    bot.on('left', async c => {
+    bot.on("left", async (c) => {
       assertEquals(c.e, mockLeftCallbackEvent);
       assertEquals((await c.reply(message)).ok, true);
     });
 
     await t.step({
-      name: 'Bot.fetch TextMessageCallbackEvent',
+      name: "Bot.fetch TextMessageCallbackEvent",
       async fn() {
-        const r = await bot.fetch(await createRequest(mockTextMessageCallbackEvent));
+        const r = await bot.fetch(
+          await createRequest(mockTextMessageCallbackEvent),
+        );
         assertEquals(r.ok, true);
-      }
+      },
     });
 
     await t.step({
-      name: 'Bot.fetch LocationMessageCallbackEvent',
+      name: "Bot.fetch LocationMessageCallbackEvent",
       async fn() {
-        const r = await bot.fetch(await createRequest(mockLocationMessageCallbackEvent));
+        const r = await bot.fetch(
+          await createRequest(mockLocationMessageCallbackEvent),
+        );
         assertEquals(r.ok, true);
-      }
+      },
     });
 
     await t.step({
-      name: 'Bot.fetch StickerMessageCallbackEvent',
+      name: "Bot.fetch StickerMessageCallbackEvent",
       async fn() {
-        const r = await bot.fetch(await createRequest(mockStickerMessageCallbackEvent));
+        const r = await bot.fetch(
+          await createRequest(mockStickerMessageCallbackEvent),
+        );
         assertEquals(r.ok, true);
-      }
+      },
     });
 
     await t.step({
-      name: 'Bot.fetch ImageMessageCallbackEvent',
+      name: "Bot.fetch ImageMessageCallbackEvent",
       async fn() {
-        const r = await bot.fetch(await createRequest(mockImageMessageCallbackEvent));
+        const r = await bot.fetch(
+          await createRequest(mockImageMessageCallbackEvent),
+        );
         assertEquals(r.ok, true);
-      }
+      },
     });
 
     await t.step({
-      name: 'Bot.fetch FileMessageCallbackEvent',
+      name: "Bot.fetch FileMessageCallbackEvent",
       async fn() {
-        const r = await bot.fetch(await createRequest(mockFileMessageCallbackEvent));
+        const r = await bot.fetch(
+          await createRequest(mockFileMessageCallbackEvent),
+        );
         assertEquals(r.ok, true);
-      }
+      },
     });
 
     await t.step({
-      name: 'Bot.fetch JoinCallbackEvent',
+      name: "Bot.fetch JoinCallbackEvent",
       async fn() {
         const r = await bot.fetch(await createRequest(mockJoinCallbackEvent));
         assertEquals(r.ok, true);
-      }
+      },
     });
     await t.step({
-      name: 'Bot.fetch LeaveCallbackEvent',
+      name: "Bot.fetch LeaveCallbackEvent",
       async fn() {
         const r = await bot.fetch(await createRequest(mockLeaveCallbackEvent));
         assertEquals(r.ok, true);
-      }
+      },
     });
     await t.step({
-      name: 'Bot.fetch JoinedCallbackEvent',
+      name: "Bot.fetch JoinedCallbackEvent",
       async fn() {
         const r = await bot.fetch(await createRequest(mockJoinedCallbackEvent));
         assertEquals(r.ok, true);
-      }
+      },
     });
     await t.step({
-      name: 'Bot.fetch LeftCallbackEvent',
+      name: "Bot.fetch LeftCallbackEvent",
       async fn() {
         const r = await bot.fetch(await createRequest(mockLeftCallbackEvent));
         assertEquals(r.ok, true);
-      }
+      },
     });
   } finally {
     fetchStub.restore();
