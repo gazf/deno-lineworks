@@ -1,5 +1,5 @@
 import { decodeBase64, encodeBase64 } from 'std/encoding/base64.ts';
-import type { Env } from './types.ts'
+import type { AuthEnv } from './types.ts'
 
 const algorithm = {
   name: 'RSASSA-PKCS1-v1_5',
@@ -39,7 +39,7 @@ async function createSignature(header: string, payload: string, privateKey: stri
   return encodeBase64(buf);
 }
 
-export async function createJWT(env: Env) {
+export async function createJWT(env: AuthEnv) {
   const header = createHeader();
   const payload = createPayload(env.clientId, env.serviceAccount);
   const signature = await createSignature(header, payload, env.privateKey);

@@ -1,6 +1,6 @@
-import { Env } from '../mod.ts';
+import { AuthEnv } from '../mod.ts';
 
-export const testEnv: Env = {
+export const testEnv: AuthEnv = {
   clientId: 'DAMMY_CLIENT_ID',
   clientSecret: 'DAMMY_CLIENT_SECRET',
   serviceAccount: 'DAMMY_SERVICE_ACCOUNT',

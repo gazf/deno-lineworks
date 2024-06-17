@@ -1,10 +1,3 @@
-export type Env = {
-  readonly clientId: string
-  readonly clientSecret: string
-  readonly serviceAccount: string
-  readonly privateKey: string
-};
-
 /** {@link https://developers.worksmobile.com/jp/docs/auth-jwt#issue-access-token-response-body} */
 export type IssueAccessTokenResponse = {
   access_token: string

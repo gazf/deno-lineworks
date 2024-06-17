@@ -1,9 +1,5 @@
 import { createJWT } from './jwt.ts';
-import type {
-  Env,
-  Scope,
-  IssueAccessTokenResponse,
-} from './types.ts';
+import type { AuthEnv, Scope, IssueAccessTokenResponse } from './types.ts';
 import { AUTH_TOKEN_ENDPOINT, REVOKE_TOKEN_ENDPOINT } from './endpoints.ts';
 
 export type AuthInterface = {
@@ -11,13 +7,10 @@ export type AuthInterface = {
 }
 
 class AuthContext {
-  private readonly raw: IssueAccessTokenResponse;
-  private readonly issueDate: number
-
-  constructor(token: IssueAccessTokenResponse, issueDate: number) {
-    this.raw = token;
-    this.issueDate = issueDate;
-  }
+  constructor(
+    private readonly raw: IssueAccessTokenResponse,
+    private readonly issueDate: number
+  ) { }
 
   get accessToken() {
     return this.raw.access_token;
@@ -49,14 +42,12 @@ class AuthContext {
 }
 
 export class Auth implements AuthInterface {
-  private readonly env: Env;
-  private readonly scopes: Scope[];
   private c?: AuthContext;
 
-  constructor(env: Env, scopes: Scope[]) {
-    this.env = env;
-    this.scopes = scopes;
-  }
+  constructor(
+    private readonly env: AuthEnv,
+    private readonly scopes: Scope[]
+  ) { }
 
   async fetchAccessToken() {
     if (this.c !== undefined) {
@@ -75,6 +66,7 @@ export class Auth implements AuthInterface {
     
     const token = await this.issueToken();
     if (token === undefined) return undefined;
+
     this.c = AuthContext.newContext(token);
 
     return this.c.accessToken;
@@ -100,7 +92,7 @@ export class Auth implements AuthInterface {
       scope: this.scopes.join(' ')
     });
 
-    if (response === undefined) return undefined;
+    if (!response.ok) return undefined;
   
     const token = await response.json() as IssueAccessTokenResponse;
     token.expires_in = Number(token.expires_in);
@@ -119,7 +111,7 @@ export class Auth implements AuthInterface {
       client_secret: this.env.clientSecret
     });
 
-    if (response === undefined) return undefined;
+    if (!response.ok) return undefined;
   
     const token = await response.json() as IssueAccessTokenResponse;
     token.expires_in = Number(token.expires_in);
@@ -137,25 +129,18 @@ export class Auth implements AuthInterface {
       token: this.c.refreshToken
     });
   
-    if (response === undefined)
+    if (!response.ok)
       console.error(response);
 
     this.c = undefined;
     return response;
   }
 
-  private async postRequest(endpoint: string, query: Record<string, string>) {
-    const response = await fetch(endpoint, {
+  private postRequest(endpoint: string, query: Record<string, string>) {
+    return fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams(query)
     });
-
-    if (!response.ok) {
-      console.error(response);
-      return undefined;
-    }
-
-    return response;
   }
 }

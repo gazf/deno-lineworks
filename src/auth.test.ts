@@ -17,7 +17,7 @@ Deno.test('Auth Class test', async (t) => {
   };
 
   await t.step({
-    name: 'Auth.fetchAccessToken()',
+    name: 'Auth.fetchAccessToken() (from edge)',
     async fn() {
       const fetchStub = stub(globalThis, 'fetch', () => Promise.resolve(new Response(
         JSON.stringify(mockAccessToken)
@@ -30,6 +30,15 @@ Deno.test('Auth Class test', async (t) => {
       } finally {
         fetchStub.restore();
       }
+    }
+  });
+
+  await t.step({
+    name: 'Auth.fetchAccessToken() (from cache)',
+    async fn() {
+      const token = await auth.fetchAccessToken();
+      assertEquals(token, mockAccessToken.access_token);
+      assertEquals(auth.context?.scopes, scopes);
     }
   });
 
