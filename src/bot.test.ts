@@ -13,7 +13,7 @@ import {
   mockTextMessageCallbackEvent,
 } from "./testdata/test.bot.ts";
 
-import { AuthInterface, Bot, CallbackEvent, TextMessage } from "./mod.ts";
+import { type AuthInterface, Bot, type CallbackEvent, type TextMessage } from "./mod.ts";
 
 const createSignature = async (secret: string, body: string) => {
   const encoder = new TextEncoder();
