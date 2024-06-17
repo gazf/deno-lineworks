@@ -17,7 +17,6 @@ import {
   Bot,
   AuthInterface,
   CallbackEvent,
-  MessageCallbackEvent,
   TextMessage
 } from './mod.ts';
 
@@ -87,7 +86,7 @@ Deno.test('Bot Class Send test', async (t) => {
 });
 
 Deno.test('Bot Class Callback test', async (t) => {
-  const createRequest = async (e: MessageCallbackEvent | CallbackEvent) => {
+  const createRequest = async (e: CallbackEvent) => {
     const body = JSON.stringify(e);
     return new Request('https://hogehoge.com/', {
       method: 'POST',

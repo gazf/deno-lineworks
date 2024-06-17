@@ -3,7 +3,8 @@ import type {
   Message,
   CallbackEvent,
   CallbackEventType,
-  Destination
+  Destination,
+  MessageCallbackEvent
 } from './types.ts';
 import { BOT_ENDPOINT } from './endpoints.ts';
 import { AuthInterface } from './auth.ts';
@@ -12,14 +13,14 @@ import { Context } from './context.ts';
 type CallbackEventHandler<T extends CallbackEvent> =
   (c: Context<T>) => Promise<void> | void;
 
-type InferCallbackEvent<T extends CallbackEventType> = 
-  Extract<CallbackEvent, { type: T }>;
+type InferCallbackEvent<T extends CallbackEventType> = T extends 'message' ?
+  MessageCallbackEvent : Extract<CallbackEvent, { type: T }>;
 
 export type SendInterface = (destination: Destination, to: string, message: Message) => Promise<Response>;
 
 export class Bot {
   private handlers: {
-    [K in CallbackEvent['type']]?: CallbackEventHandler<InferCallbackEvent<K>>;
+    [K in CallbackEventType]?: CallbackEventHandler<InferCallbackEvent<K>>;
   };
 
   constructor(
@@ -84,7 +85,7 @@ export class Bot {
     if (botIdHeader !== this.id)
       return new Response('error', {status: 400});
 
-    const requestBody = await this.streamToString(request);
+    const requestBody = await request.text();
 
     const isValidRequest = await this.isValidSignature(signatureHeader, requestBody);
     if (!isValidRequest)
@@ -98,20 +99,6 @@ export class Bot {
 
     return new Response('ok', {status: 200});
   };
-
-  private async streamToString(request: Request) {
-    const stream = request.body;
-    if (stream === null) return '';
-
-    const textStream = stream.pipeThrough(new TextDecoderStream());
-    const chunks: string[] = [];
-
-    for await (const chunk of textStream) {
-      chunks.push(chunk);
-    }
-
-    return chunks.join();
-  }
 
   private async isValidSignature(signatureHeader: string, requestBody: string) {
     const encoder = new TextEncoder();
