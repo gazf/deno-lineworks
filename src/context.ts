@@ -1,4 +1,4 @@
-import { SendInterface } from "./bot.ts";
+import type { SendInterface } from "./bot.ts";
 import type { CallbackEvent, Destination, Message } from "./types.ts";
 
 export class Context<T extends CallbackEvent> {
@@ -7,11 +7,15 @@ export class Context<T extends CallbackEvent> {
     public readonly e: T,
   ) {}
 
-  send(destination: Destination, to: string, message: Message) {
+  send(
+    destination: Destination,
+    to: string,
+    message: Message,
+  ): Promise<Response> {
     return this.app.send(destination, to, message);
   }
 
-  reply(message: Message) {
+  reply(message: Message): Promise<Response> {
     const { destination, to } = this.getDestination();
     return this.app.send(destination, to, message);
   }

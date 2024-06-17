@@ -2,7 +2,7 @@ import { assertEquals } from "std/assert/mod.ts";
 import { stub } from "std/testing/mock.ts";
 import { testEnv } from "./testdata/test.env.ts";
 
-import { Auth, Scope } from "./mod.ts";
+import { Auth, type Scope } from "./mod.ts";
 
 Deno.test("Auth Class test", async (t) => {
   const scopes: Scope[] = ["bot", "bot.read"];

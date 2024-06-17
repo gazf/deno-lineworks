@@ -1,4 +1,7 @@
 {
+  "name": "@gazf/deno-lineworks",
+  "version": "0.0.1",
+  "exports": "./src/mod.ts",
   "imports": {
     "std/": "https://deno.land/std@0.222.1/",
     "hono/": "https://deno.land/x/hono@v4.2.4/"
