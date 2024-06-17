@@ -7,7 +7,7 @@ import type {
   MessageCallbackEvent,
 } from "./types.ts";
 import { BOT_ENDPOINT } from "./endpoints.ts";
-import { AuthInterface } from "./auth.ts";
+import type { AuthInterface } from "./auth.ts";
 import { Context } from "./context.ts";
 
 type CallbackEventHandler<T extends CallbackEvent> = (

@@ -12,30 +12,30 @@ class AuthContext {
     private readonly issueDate: number,
   ) {}
 
-  get accessToken() {
+  get accessToken(): string {
     return this.raw.access_token;
   }
 
-  get refreshToken() {
+  get refreshToken(): string {
     return this.raw.refresh_token;
   }
 
-  get scopes() {
+  get scopes(): Scope[] {
     const scopes = this.raw.scope.split(" ");
     return scopes as Scope[];
   }
 
-  static newContext(token: IssueAccessTokenResponse) {
+  static newContext(token: IssueAccessTokenResponse): AuthContext {
     return new AuthContext(token, AuthContext.createTimestamp());
   }
 
   private static createTimestamp = () => Math.floor(Date.now() / 1000);
 
-  isAccessTokenExpired() {
+  isAccessTokenExpired(): boolean {
     return this.raw.expires_in + this.issueDate < AuthContext.createTimestamp();
   }
 
-  isRefreshTokenExpired() {
+  isRefreshTokenExpired(): boolean {
     const defaultExpiresIn = 60 * 60 * 24 * 90; // 90 days
     return defaultExpiresIn + this.issueDate < AuthContext.createTimestamp();
   }
@@ -49,7 +49,7 @@ export class Auth implements AuthInterface {
     private readonly scopes: Scope[],
   ) {}
 
-  async fetchAccessToken() {
+  async fetchAccessToken(): Promise<string | undefined> {
     if (this.c !== undefined) {
       if (!this.c.isAccessTokenExpired()) {
         return this.c.accessToken;
@@ -73,7 +73,7 @@ export class Auth implements AuthInterface {
   }
 
   /** Use caching AuthContext */
-  get context() {
+  get context(): AuthContext | undefined {
     return this.c;
   }
   /** Use restore AuthContext */
@@ -122,7 +122,7 @@ export class Auth implements AuthInterface {
   }
 
   /** {@link https://developers.worksmobile.com/jp/docs/auth-oauth#revoke-token} */
-  async revokeToken() {
+  async revokeToken(): Promise<Response | undefined> {
     if (this.c === undefined) return;
 
     const response = await this.postRequest(REVOKE_TOKEN_ENDPOINT, {
