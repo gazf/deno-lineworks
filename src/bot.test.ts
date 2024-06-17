@@ -1,6 +1,6 @@
-import { assertEquals } from "std/assert/mod.ts";
-import { encodeBase64 } from "std/encoding/base64.ts";
-import { stub } from "std/testing/mock.ts";
+import { assertEquals } from "@std/assert";
+import { encodeBase64 } from "@std/encoding";
+import { stub } from "@std/testing/mock";
 import {
   mockFileMessageCallbackEvent,
   mockImageMessageCallbackEvent,

@@ -1,4 +1,4 @@
-import { encodeBase64 } from "std/encoding/base64.ts";
+import { encodeBase64 } from "@std/encoding";
 import type {
   CallbackEvent,
   CallbackEventType,
