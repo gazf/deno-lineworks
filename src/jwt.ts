@@ -1,4 +1,4 @@
-import { decodeBase64, encodeBase64 } from "std/encoding/base64.ts";
+import { decodeBase64, encodeBase64 } from "@std/encoding";
 import type { AuthEnv } from "./types.ts";
 
 const algorithm = {
