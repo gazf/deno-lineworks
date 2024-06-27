@@ -16,7 +16,7 @@ export type MessageCallbackEvent =
   | ImageMessageCallbackEvent
   | FileMessageCallbackEvent;
 
-export type MessageCallbackEventBase = {
+type MessageCallbackEventBase = {
   type: "message";
   source: {
     userId: string;
