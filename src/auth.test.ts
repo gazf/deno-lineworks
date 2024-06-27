@@ -41,6 +41,17 @@ Deno.test("Auth Class test", async (t) => {
   });
 
   await t.step({
+    name: "Auth.includeScopes()",
+    fn() {
+      assertEquals(auth.includeScopes(scopes), true);
+      assertEquals(auth.includeScopes(["calendar", "calendar.read"]), false);
+      assertEquals(auth.includeScopes(["calendar", "bot"]), false);
+      assertEquals(auth.includeScopes(["calendar", ...scopes]), false);
+      assertEquals(auth.includeScopes(["bot"]), true);
+    },
+  });
+
+  await t.step({
     name: "Auth.fetchAccessToken() (from cache)",
     async fn() {
       const token = await auth.fetchAccessToken();

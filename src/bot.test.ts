@@ -44,6 +44,7 @@ const mockAuth: AuthInterface = {
     new Promise((resolve) => {
       resolve("DAMMY_ACCESS_TOKEN");
     }),
+  includeScopes: () => true,
 };
 
 Deno.test("Bot Class Send test", async (t) => {

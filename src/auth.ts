@@ -4,6 +4,7 @@ import { AUTH_TOKEN_ENDPOINT, REVOKE_TOKEN_ENDPOINT } from "./endpoints.ts";
 
 export type AuthInterface = {
   fetchAccessToken(): Promise<string | undefined>;
+  includeScopes(scopes: Scope[]): boolean;
 };
 
 class AuthContext {
@@ -70,6 +71,10 @@ export class Auth implements AuthInterface {
     this.c = AuthContext.newContext(token);
 
     return this.c.accessToken;
+  }
+
+  includeScopes(scopes: Scope[]): boolean {
+    return scopes.every((s) => this.scopes.includes(s));
   }
 
   /** Use caching AuthContext */
