@@ -1,5 +1,4 @@
-import { assertEquals } from "@std/assert";
-import { stub } from "@std/testing/mock";
+import { assertEquals, stub } from "./deps-test.ts";
 import { testEnv } from "./testdata/test.env.ts";
 
 import { Auth, type Scope } from "./mod.ts";

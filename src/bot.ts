@@ -1,4 +1,3 @@
-import { encodeBase64 } from "@std/encoding";
 import type {
   CallbackEvent,
   CallbackEventType,
@@ -9,6 +8,7 @@ import type {
 import { BOT_ENDPOINT } from "./endpoints.ts";
 import type { AuthInterface } from "./auth.ts";
 import { Context } from "./context.ts";
+import { encodeBase64 } from "./base64.ts";
 
 type CallbackEventHandler<T extends CallbackEvent> = (
   c: Context<T>,
@@ -23,6 +23,22 @@ export type SendInterface = (
   to: string,
   message: Message,
 ) => Promise<Response>;
+
+const createSignature = async (secret: string, body: string) => {
+  const encoder = new TextEncoder();
+  const keyBuffer = encoder.encode(secret);
+  const key = crypto.subtle.importKey(
+    "raw",
+    keyBuffer,
+    { name: "HMAC", hash: "SHA-256" },
+    true,
+    ["sign"],
+  );
+
+  const bodyBuffer = encoder.encode(body);
+  const hmac = await crypto.subtle.sign("HMAC", await key, bodyBuffer.buffer);
+  return encodeBase64(hmac);
+};
 
 export class Bot {
   private handlers: {
@@ -100,12 +116,8 @@ export class Bot {
     }
 
     const requestBody = await request.text();
-
-    const isValidRequest = await this.isValidSignature(
-      signatureHeader,
-      requestBody,
-    );
-    if (!isValidRequest) {
+    const signature = await createSignature(this.secret, requestBody);
+    if (signatureHeader !== signature) {
       return new Response("error", { status: 401 });
     }
 
@@ -117,22 +129,4 @@ export class Bot {
 
     return new Response("ok", { status: 200 });
   };
-
-  private async isValidSignature(signatureHeader: string, requestBody: string) {
-    const encoder = new TextEncoder();
-    const keyBuffer = encoder.encode(this.secret);
-    const key = crypto.subtle.importKey(
-      "raw",
-      keyBuffer,
-      { name: "HMAC", hash: "SHA-256" },
-      true,
-      ["sign"],
-    );
-
-    const bodyBuffer = encoder.encode(requestBody);
-    const hmac = await crypto.subtle.sign("HMAC", await key, bodyBuffer.buffer);
-    const signature = encodeBase64(new Uint8Array(hmac));
-
-    return signature === signatureHeader;
-  }
 }
