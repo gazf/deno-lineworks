@@ -1,4 +1,3 @@
-import { encodeBase64 } from "./deps.ts";
 import type {
   CallbackEvent,
   CallbackEventType,
@@ -9,6 +8,7 @@ import type {
 import { BOT_ENDPOINT } from "./endpoints.ts";
 import type { AuthInterface } from "./auth.ts";
 import { Context } from "./context.ts";
+import { encodeBase64 } from "./base64.ts";
 
 type CallbackEventHandler<T extends CallbackEvent> = (
   c: Context<T>,
@@ -37,7 +37,7 @@ const createSignature = async (secret: string, body: string) => {
 
   const bodyBuffer = encoder.encode(body);
   const hmac = await crypto.subtle.sign("HMAC", await key, bodyBuffer.buffer);
-  return encodeBase64(new Uint8Array(hmac));
+  return encodeBase64(hmac);
 };
 
 export class Bot {

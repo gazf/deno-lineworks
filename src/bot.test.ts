@@ -1,5 +1,4 @@
 import { assertEquals, stub } from "./deps-test.ts";
-import { encodeBase64 } from "./deps.ts";
 import {
   mockFileMessageCallbackEvent,
   mockImageMessageCallbackEvent,
@@ -18,6 +17,7 @@ import {
   type CallbackEvent,
   type TextMessage,
 } from "./mod.ts";
+import { encodeBase64 } from "./base64.ts";
 
 const createSignature = async (secret: string, body: string) => {
   const encoder = new TextEncoder();
@@ -32,7 +32,7 @@ const createSignature = async (secret: string, body: string) => {
 
   const bodyBuffer = encoder.encode(body);
   const hmac = await crypto.subtle.sign("HMAC", await key, bodyBuffer.buffer);
-  return encodeBase64(new Uint8Array(hmac));
+  return encodeBase64(hmac);
 };
 
 const botId = "1111111111";
