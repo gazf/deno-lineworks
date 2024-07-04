@@ -9,7 +9,7 @@ import type {
   PostbackCallbackEvent,
   StickerMessageCallbackEvent,
   TextMessageCallbackEvent,
-} from "../mod.ts";
+} from "../../mod.ts";
 
 export const mockTextMessageCallbackEvent: TextMessageCallbackEvent = {
   type: "message",

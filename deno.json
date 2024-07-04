@@ -8,9 +8,7 @@
       "deno.json"
     ],
     "exclude": [
-      "src/testdata",
-      "src/**/*.test.ts",
-      "src/deps-test.ts"
+      "src/tests/"
     ]
   }
 }

@@ -4,7 +4,7 @@ import {
   encodeBase64 as stdEncodeBase64,
 } from "./deps-test.ts";
 import { base64data, textdata } from "./testdata/test.base64.ts";
-import { decodeBase64, encodeBase64 } from "./base64.ts";
+import { decodeBase64, encodeBase64 } from "../base64.ts";
 
 Deno.test({
   name: "encodeBase64 Test",
