@@ -16,8 +16,8 @@ import {
   Bot,
   type CallbackEvent,
   type TextMessage,
-} from "./mod.ts";
-import { encodeBase64 } from "./base64.ts";
+} from "../mod.ts";
+import { encodeBase64 } from "../base64.ts";
 
 const createSignature = async (secret: string, body: string) => {
   const encoder = new TextEncoder();

@@ -1,4 +1,4 @@
-import type { AuthEnv } from "../mod.ts";
+import type { AuthEnv } from "../../mod.ts";
 
 export const testEnv: AuthEnv = {
   clientId: "DAMMY_CLIENT_ID",
