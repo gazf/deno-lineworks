@@ -16,8 +16,17 @@ function validateArray(value: unknown): Uint8Array {
 export function encodeBase64(data: string | Uint8Array | ArrayBuffer): string {
   const array = validateArray(data);
 
+  const c = array.length - (array.length % 8);
   let bin: string = "";
-  for (let i = 0; i < array.length; i++) {
+  for (let i = 0; i < c;) {
+    bin += String.fromCharCode(
+        array[i++], array[i++],
+        array[i++], array[i++],
+        array[i++], array[i++],
+        array[i++], array[i++],
+    );
+  }
+  for (let i = c; i < array.length; i++) {
     bin += String.fromCharCode(array[i]);
   }
 
@@ -28,7 +37,7 @@ export function decodeBase64(base64: string): Uint8Array {
   const bin = atob(base64);
   const buf = new Uint8Array(bin.length);
   for (let i = 0; i < buf.length; i++) {
-    buf[i] = bin[i].charCodeAt(0);
+    buf[i] = bin.charCodeAt(i);
   }
 
   return buf;
