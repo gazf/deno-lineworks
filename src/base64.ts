@@ -20,10 +20,14 @@ export function encodeBase64(data: string | Uint8Array | ArrayBuffer): string {
   let bin: string = "";
   for (let i = 0; i < c;) {
     bin += String.fromCharCode(
-        array[i++], array[i++],
-        array[i++], array[i++],
-        array[i++], array[i++],
-        array[i++], array[i++],
+      array[i++],
+      array[i++],
+      array[i++],
+      array[i++],
+      array[i++],
+      array[i++],
+      array[i++],
+      array[i++],
     );
   }
   for (let i = c; i < array.length; i++) {
