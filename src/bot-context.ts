@@ -1,9 +1,9 @@
-import type { SendInterface } from "./bot.ts";
+import type { SendMessageInterface } from "./bot.ts";
 import type { CallbackEvent, Destination, Message } from "./types.ts";
 
-export class Context<T extends CallbackEvent> {
+export class BotContext<T extends CallbackEvent> {
   constructor(
-    private readonly app: { send: SendInterface },
+    private readonly app: { send: SendMessageInterface },
     public readonly e: T,
   ) {}
 

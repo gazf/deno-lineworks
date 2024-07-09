@@ -7,18 +7,18 @@ import type {
 } from "./types.ts";
 import { BOT_ENDPOINT } from "./endpoints.ts";
 import type { AuthInterface } from "./auth.ts";
-import { Context } from "./context.ts";
+import { BotContext } from "./bot-context.ts";
 import { encodeBase64 } from "./base64.ts";
 
 type CallbackEventHandler<T extends CallbackEvent> = (
-  c: Context<T>,
+  c: BotContext<T>,
 ) => Promise<void> | void;
 
 type InferCallbackEvent<T extends CallbackEventType> = T extends "message"
   ? MessageCallbackEvent
   : Extract<CallbackEvent, { type: T }>;
 
-export type SendInterface = (
+export type SendMessageInterface = (
   destination: Destination,
   to: string,
   message: Message,
@@ -53,7 +53,7 @@ export class Bot {
     this.handlers = {};
   }
 
-  send: SendInterface = async (
+  send: SendMessageInterface = async (
     destination: Destination,
     to: string,
     message: Message,
@@ -81,7 +81,7 @@ export class Bot {
   private dispatch<T extends CallbackEvent>(e: T) {
     const handler = this.handlers[e.type];
     if (handler !== undefined) {
-      const ctx = new Context(this, e);
+      const ctx = new BotContext(this, e);
       // deno-lint-ignore no-explicit-any
       return handler(ctx as any);
     }
