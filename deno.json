@@ -1,12 +1,14 @@
 {
   "name": "@gazf/deno-lineworks",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
   "exports": "./src/mod.ts",
   "publish": {
     "include": [
       "src/**/*.ts",
-      "deno.json"
+      "deno.json",
+      "LICENSE",
+      "README.md"
     ],
     "exclude": [
       "src/tests/"
