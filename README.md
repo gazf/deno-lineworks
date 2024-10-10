@@ -11,7 +11,7 @@ This package is for easy use of [LINE WORKS](https://line-works.com/).
 ## Basic usage
 
 ```typescript
-import { Auth, Bot } from "@gazf/deno-lineworks";
+import { Auth, Bot } from "jsr:@gazf/deno-lineworks";
 
 const auth = new Auth({
   clientId: "YOUR_LINEWORKS_CLIENT_ID",
@@ -46,8 +46,8 @@ await bot.send("channels", "channel_id", {
 ## Echoback (Use Hono)
 
 ```typescript
-import { Auth, Bot } from "@gazf/deno-lineworks";
-import { Hono } from "@hono/hono";
+import { Auth, Bot } from "jsr:@gazf/deno-lineworks";
+import { Hono } from "jsr:@hono/hono";
 
 const auth = new Auth({
   clientId: "YOUR_LINEWORKS_CLIENT_ID",
