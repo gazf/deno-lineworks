@@ -53,6 +53,13 @@ export class Bot {
     this.handlers = {};
   }
 
+  /**
+   * `.send()` allows you to send a message from Bot.
+   * @example
+   * bot.send("users", "sam@corp", {
+   *   ...
+   * });
+   */
   send: SendMessageInterface = async (
     destination: Destination,
     to: string,
@@ -70,6 +77,13 @@ export class Bot {
     });
   };
 
+  /**
+   * `.on()` allows you to register a callback handler.
+   * @example
+   * bot.on("message", c => {
+   *   c.reply(...);
+   * });
+   */
   on<T extends CallbackEventType>(
     type: T,
     handler: CallbackEventHandler<InferCallbackEvent<T>>,
@@ -87,11 +101,20 @@ export class Bot {
     }
   }
 
-  readonly fetch = async (
+  /**
+   * `.fetch()` will be entry point of your app.
+   *
+   * @example // use Hono
+   * const app = new Hono();
+   * const bot = new Bot();
+   * app.mount("/callback", bot.fetch);
+   * Deno.serve(app.fetch);
+   */
+  async fetch(
     request: Request,
     // deno-lint-ignore no-explicit-any  no-unused-vars
     ...args: any
-  ): Promise<Response> => {
+  ): Promise<Response> {
     if (request.method !== "POST") {
       return new Response("error", { status: 405 });
     }
@@ -128,5 +151,5 @@ export class Bot {
     const _ = this.dispatch(event);
 
     return new Response("ok", { status: 200 });
-  };
+  }
 }

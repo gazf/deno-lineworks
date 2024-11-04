@@ -1,5 +1,10 @@
 import type { SendMessageInterface } from "./bot.ts";
-import type { CallbackEvent, Destination, Message } from "./types.ts";
+import type {
+  CallbackEvent,
+  CallbackEventType,
+  Destination,
+  Message,
+} from "./types.ts";
 
 export class BotContext<T extends CallbackEvent> {
   constructor(
@@ -16,17 +21,24 @@ export class BotContext<T extends CallbackEvent> {
   }
 
   reply(message: Message): Promise<Response> {
-    const { destination, to } = this.getDestination();
-    return this.app.send(destination, to, message);
+    return this.app.send(this.by(), this.id(), message);
   }
 
-  private getDestination() {
-    const destination: Destination = this.e.source.channelId === undefined
-      ? "users"
-      : "channels";
-    const to: string = this.e.type === "message"
+  by(): Destination {
+    return this.e.source.channelId === undefined ? "users" : "channels";
+  }
+
+  id(): string {
+    return this.e.type === "message"
       ? this.e.source.channelId ?? this.e.source.userId
       : this.e.source.channelId;
-    return { destination, to };
+  }
+
+  type(): CallbackEventType {
+    return this.e.type;
+  }
+
+  timestamp(): string {
+    return this.e.issuedTime;
   }
 }
