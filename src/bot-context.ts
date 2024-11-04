@@ -1,5 +1,10 @@
 import type { SendMessageInterface } from "./bot.ts";
-import type { CallbackEvent, CallbackEventType, Destination, Message } from "./types.ts";
+import type {
+  CallbackEvent,
+  CallbackEventType,
+  Destination,
+  Message,
+} from "./types.ts";
 
 export class BotContext<T extends CallbackEvent> {
   constructor(
