@@ -80,8 +80,8 @@ export class Bot {
   /**
    * `.on()` allows you to register a callback handler.
    * @example
-   * bot.on("message", c => {
-   *   c.reply(...);
+   * bot.on("message", async c => {
+   *   await c.reply(...);
    * });
    */
   on<T extends CallbackEventType>(
@@ -110,11 +110,9 @@ export class Bot {
    * app.mount("/callback", bot.fetch);
    * Deno.serve(app.fetch);
    */
-  async fetch(
+  fetch: (
     request: Request,
-    // deno-lint-ignore no-explicit-any  no-unused-vars
-    ...args: any
-  ): Promise<Response> {
+  ) => Promise<Response> = async (request) => {
     if (request.method !== "POST") {
       return new Response("error", { status: 405 });
     }
@@ -151,5 +149,5 @@ export class Bot {
     const _ = this.dispatch(event);
 
     return new Response("ok", { status: 200 });
-  }
+  };
 }
