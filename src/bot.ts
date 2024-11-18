@@ -110,9 +110,7 @@ export class Bot {
    * app.mount("/callback", bot.fetch);
    * Deno.serve(app.fetch);
    */
-  fetch: (
-    request: Request,
-  ) => Promise<Response> = async (request) => {
+  fetch: (request: Request) => Promise<Response> = async (request) => {
     if (request.method !== "POST") {
       return new Response("error", { status: 405 });
     }
