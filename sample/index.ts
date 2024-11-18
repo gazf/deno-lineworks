@@ -1,51 +1,35 @@
+import { defaultAuthEnv, env } from "../src/env.ts";
 import { Auth, Bot, type Destination } from "../src/mod.ts";
 import { Hono } from "jsr:@hono/hono";
 
-const config: { [key: string]: string } = {};
-
-// Check environment variables
-[
-  "LINEWORKS_CLIENT_ID",
-  "LINEWORKS_CLIENT_SECRET",
-  "LINEWORKS_SERVICE_ACCOUNT",
-  "LINEWORKS_PRIVATE_KEY",
-
+// Read envs
+const botConfig = env([
   "LINEWORKS_BOT_ID",
   "LINEWORKS_BOT_SECRET",
-
   "LINEWORKS_DEST",
   "LINEWORKS_ID",
-].map((key) => {
-  if (!Deno.env.has(key)) {
-    throw new Error(`Environment variable is not set: ${key}`);
-  }
-  config[key] = Deno.env.get(key) ?? "";
-});
+]);
 
-const auth = new Auth({
-  clientId: config["LINEWORKS_CLIENT_ID"],
-  clientSecret: config["LINEWORKS_CLIENT_SECRET"],
-  serviceAccount: config["LINEWORKS_SERVICE_ACCOUNT"],
-  privateKey: config["LINEWORKS_PRIVATE_KEY"],
-}, ["bot"]);
-
+// Create Bot instance
 const bot = new Bot(
-  config["LINEWORKS_BOT_ID"],
-  config["LINEWORKS_BOT_SECRET"],
-  auth,
+  botConfig.LINEWORKS_BOT_ID,
+  botConfig.LINEWORKS_BOT_SECRET,
+  new Auth(defaultAuthEnv(), ["bot"]),
 );
 
+// Send message
 await bot.send(
-  config["LINEWORKS_DEST"] as Destination,
-  config["LINEWORKS_ID"],
+  botConfig.LINEWORKS_DEST as Destination,
+  botConfig.LINEWORKS_ID,
   {
     content: {
       type: "text",
-      text: `Hello ${config["LINEWORKS_ID"]}`,
+      text: `Hello ${botConfig.LINEWORKS_ID}`,
     },
   },
 );
 
+// Register callback handler
 bot.on("message", async (c) => {
   if (c.e.content.type == "text") {
     await c.reply({
@@ -57,7 +41,7 @@ bot.on("message", async (c) => {
   }
 });
 
+// Mount app
 const app = new Hono();
 app.mount("/callback", bot.fetch);
-
 Deno.serve(app.fetch);
