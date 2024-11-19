@@ -1,7 +1,8 @@
 import type { AuthEnv } from "./types.ts";
 
-/** This function reads environment variables using `Deno.env`
- *
+/** This function reads environment variables using `Deno.env.get()`
+ * @param keys Environment variable key names.
+ * @param [isAllowUndefined=false] If false(default), an exception is raised when the environment variable is undefined.
  * @example
  * const e = env(["USER", "SHELL"]);
  * console.log(e.USER);
@@ -27,13 +28,14 @@ export function env<T extends string>(
  *
  * This function is similar to the following code.
  *
- * @example
+ * ```ts
  * return {
  *   clientId: Deno.env.get("LINEWORKS_CLIENT_ID"),
  *   clientSecret: Deno.env.get("LINEWORKS_CLIENT_SECRET"),
  *   serviceAccount: Deno.env.get("LINEWORKS_SERVICE_ACCOUNT"),
  *   privateKey: Deno.env.get("LINEWORKS_PRIVATE_KEY"),
  * } as AuthEnv;
+ * ```
  */
 export function defaultAuthEnv(): AuthEnv {
   const e = env([

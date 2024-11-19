@@ -124,46 +124,82 @@ Deno.test("Bot Class Callback test", async (t) => {
       content: { type: "text", text: "HOGE" },
     };
 
-    bot.on("message", async (c) => {
+    bot.on("message", (c) => {
       switch (c.e.content.type) {
         case "text":
           assertEquals(c.e, mockTextMessageCallbackEvent);
-          assertEquals((await c.reply(message)).ok, true);
+          assertEquals(c.reply(message), {
+            destination: c.by(),
+            to: c.id(),
+            message: message,
+          });
           break;
         case "image":
           assertEquals(c.e, mockImageMessageCallbackEvent);
-          assertEquals((await c.reply(message)).ok, true);
+          assertEquals(c.reply(message), {
+            destination: c.by(),
+            to: c.id(),
+            message: message,
+          });
           break;
         case "sticker":
           assertEquals(c.e, mockStickerMessageCallbackEvent);
-          assertEquals((await c.reply(message)).ok, true);
+          assertEquals(c.reply(message), {
+            destination: c.by(),
+            to: c.id(),
+            message: message,
+          });
           break;
         case "location":
           assertEquals(c.e, mockLocationMessageCallbackEvent);
-          assertEquals((await c.reply(message)).ok, true);
+          assertEquals(c.reply(message), {
+            destination: c.by(),
+            to: c.id(),
+            message: message,
+          });
           break;
         case "file":
           assertEquals(c.e, mockFileMessageCallbackEvent);
-          assertEquals((await c.reply(message)).ok, true);
+          assertEquals(c.reply(message), {
+            destination: c.by(),
+            to: c.id(),
+            message: message,
+          });
           break;
       }
     });
 
-    bot.on("join", async (c) => {
+    bot.on("join", (c) => {
       assertEquals(c.e, mockJoinCallbackEvent);
-      assertEquals((await c.reply(message)).ok, true);
+      assertEquals(c.reply(message), {
+        destination: c.by(),
+        to: c.id(),
+        message: message,
+      });
     });
-    bot.on("leave", async (c) => {
+    bot.on("leave", (c) => {
       assertEquals(c.e, mockLeaveCallbackEvent);
-      assertEquals((await c.reply(message)).ok, true);
+      assertEquals(c.reply(message), {
+        destination: c.by(),
+        to: c.id(),
+        message: message,
+      });
     });
-    bot.on("joined", async (c) => {
+    bot.on("joined", (c) => {
       assertEquals(c.e, mockJoinedCallbackEvent);
-      assertEquals((await c.reply(message)).ok, true);
+      assertEquals(c.reply(message), {
+        destination: c.by(),
+        to: c.id(),
+        message: message,
+      });
     });
-    bot.on("left", async (c) => {
+    bot.on("left", (c) => {
       assertEquals(c.e, mockLeftCallbackEvent);
-      assertEquals((await c.reply(message)).ok, true);
+      assertEquals(c.reply(message), {
+        destination: c.by(),
+        to: c.id(),
+        message: message,
+      });
     });
 
     await t.step({

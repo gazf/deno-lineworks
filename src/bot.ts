@@ -7,22 +7,16 @@ import type {
 } from "./types.ts";
 import { BOT_ENDPOINT } from "./endpoints.ts";
 import type { AuthInterface } from "./auth.ts";
-import { BotContext } from "./bot-context.ts";
+import { BotContext, type MessageResponse } from "./bot-context.ts";
 import { encodeBase64 } from "./base64.ts";
 
 type CallbackEventHandler<T extends CallbackEvent> = (
   c: BotContext<T>,
-) => Promise<void> | void;
+) => MessageResponse | void;
 
 type InferCallbackEvent<T extends CallbackEventType> = T extends "message"
   ? MessageCallbackEvent
   : Extract<CallbackEvent, { type: T }>;
-
-export type SendMessageInterface = (
-  destination: Destination,
-  to: string,
-  message: Message,
-) => Promise<Response>;
 
 const createSignature = async (secret: string, body: string) => {
   const encoder = new TextEncoder();
@@ -60,11 +54,11 @@ export class Bot {
    *   ...
    * });
    */
-  send: SendMessageInterface = async (
+  async send(
     destination: Destination,
     to: string,
     message: Message,
-  ) => {
+  ): Promise<Response> {
     const token = await this.auth.fetchAccessToken();
     const url = `${BOT_ENDPOINT}${this.id}/${destination}/${to}/messages`;
     return fetch(url, {
@@ -75,13 +69,13 @@ export class Bot {
       },
       body: JSON.stringify(message),
     });
-  };
+  }
 
   /**
    * `.on()` allows you to register a callback handler.
    * @example
-   * bot.on("message", async c => {
-   *   await c.reply(...);
+   * bot.on("message", c => {
+   *   return c.reply(...);
    * });
    */
   on<T extends CallbackEventType>(
@@ -95,7 +89,7 @@ export class Bot {
   private dispatch<T extends CallbackEvent>(e: T) {
     const handler = this.handlers[e.type];
     if (handler !== undefined) {
-      const ctx = new BotContext(this, e);
+      const ctx = new BotContext(e);
       // deno-lint-ignore no-explicit-any
       return handler(ctx as any);
     }
@@ -142,9 +136,12 @@ export class Bot {
 
     const event = JSON.parse(requestBody) as CallbackEvent;
 
-    // https://developers.worksmobile.com/jp/docs/bot-callback#callback-flow
-    // Need to get a quick response back.
-    const _ = this.dispatch(event);
+    const response = this.dispatch(event);
+    if (response !== undefined) {
+      // https://developers.worksmobile.com/jp/docs/bot-callback#callback-flow
+      // Return Response as soon as possible.
+      const _ = this.send(response.destination, response.to, response.message);
+    }
 
     return new Response("ok", { status: 200 });
   };

@@ -1,4 +1,3 @@
-import type { SendMessageInterface } from "./bot.ts";
 import type {
   CallbackEvent,
   CallbackEventType,
@@ -6,22 +5,33 @@ import type {
   Message,
 } from "./types.ts";
 
+export type MessageResponse = {
+  destination: Destination;
+  to: string;
+  message: Message;
+};
+
 export class BotContext<T extends CallbackEvent> {
-  constructor(
-    private readonly app: { send: SendMessageInterface },
-    public readonly e: T,
-  ) {}
+  constructor(public readonly e: T) {}
+
+  newResponse(
+    destination: Destination,
+    to: string,
+    message: Message,
+  ): MessageResponse {
+    return { destination, to, message };
+  }
 
   send(
     destination: Destination,
     to: string,
     message: Message,
-  ): Promise<Response> {
-    return this.app.send(destination, to, message);
+  ): MessageResponse {
+    return this.newResponse(destination, to, message);
   }
 
-  reply(message: Message): Promise<Response> {
-    return this.app.send(this.by(), this.id(), message);
+  reply(message: Message): MessageResponse {
+    return this.newResponse(this.by(), this.id(), message);
   }
 
   by(): Destination {

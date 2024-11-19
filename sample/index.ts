@@ -30,9 +30,9 @@ await bot.send(
 );
 
 // Register callback handler
-bot.on("message", async (c) => {
+bot.on("message", (c) => {
   if (c.e.content.type == "text") {
-    await c.reply({
+    return c.reply({
       content: {
         type: "text",
         text: `echo message: ${c.e.content.text}`,
