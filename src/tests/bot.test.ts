@@ -125,9 +125,9 @@ Deno.test("Bot Class Callback test", async (t) => {
     };
 
     bot.on("message", (c) => {
-      switch (c.e.content.type) {
+      switch (c.event.content.type) {
         case "text":
-          assertEquals(c.e, mockTextMessageCallbackEvent);
+          assertEquals(c.event, mockTextMessageCallbackEvent);
           assertEquals(c.reply(message), {
             destination: c.by(),
             to: c.id(),
@@ -135,7 +135,7 @@ Deno.test("Bot Class Callback test", async (t) => {
           });
           break;
         case "image":
-          assertEquals(c.e, mockImageMessageCallbackEvent);
+          assertEquals(c.event, mockImageMessageCallbackEvent);
           assertEquals(c.reply(message), {
             destination: c.by(),
             to: c.id(),
@@ -143,7 +143,7 @@ Deno.test("Bot Class Callback test", async (t) => {
           });
           break;
         case "sticker":
-          assertEquals(c.e, mockStickerMessageCallbackEvent);
+          assertEquals(c.event, mockStickerMessageCallbackEvent);
           assertEquals(c.reply(message), {
             destination: c.by(),
             to: c.id(),
@@ -151,7 +151,7 @@ Deno.test("Bot Class Callback test", async (t) => {
           });
           break;
         case "location":
-          assertEquals(c.e, mockLocationMessageCallbackEvent);
+          assertEquals(c.event, mockLocationMessageCallbackEvent);
           assertEquals(c.reply(message), {
             destination: c.by(),
             to: c.id(),
@@ -159,7 +159,7 @@ Deno.test("Bot Class Callback test", async (t) => {
           });
           break;
         case "file":
-          assertEquals(c.e, mockFileMessageCallbackEvent);
+          assertEquals(c.event, mockFileMessageCallbackEvent);
           assertEquals(c.reply(message), {
             destination: c.by(),
             to: c.id(),
@@ -170,7 +170,7 @@ Deno.test("Bot Class Callback test", async (t) => {
     });
 
     bot.on("join", (c) => {
-      assertEquals(c.e, mockJoinCallbackEvent);
+      assertEquals(c.event, mockJoinCallbackEvent);
       assertEquals(c.reply(message), {
         destination: c.by(),
         to: c.id(),
@@ -178,7 +178,7 @@ Deno.test("Bot Class Callback test", async (t) => {
       });
     });
     bot.on("leave", (c) => {
-      assertEquals(c.e, mockLeaveCallbackEvent);
+      assertEquals(c.event, mockLeaveCallbackEvent);
       assertEquals(c.reply(message), {
         destination: c.by(),
         to: c.id(),
@@ -186,7 +186,7 @@ Deno.test("Bot Class Callback test", async (t) => {
       });
     });
     bot.on("joined", (c) => {
-      assertEquals(c.e, mockJoinedCallbackEvent);
+      assertEquals(c.event, mockJoinedCallbackEvent);
       assertEquals(c.reply(message), {
         destination: c.by(),
         to: c.id(),
@@ -194,7 +194,7 @@ Deno.test("Bot Class Callback test", async (t) => {
       });
     });
     bot.on("left", (c) => {
-      assertEquals(c.e, mockLeftCallbackEvent);
+      assertEquals(c.event, mockLeftCallbackEvent);
       assertEquals(c.reply(message), {
         destination: c.by(),
         to: c.id(),

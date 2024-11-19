@@ -11,7 +11,9 @@ import type { AuthEnv } from "./types.ts";
 export function env<T extends string>(
   keys: T[],
   isAllowUndefined: boolean = false,
-) {
+): {
+  [Key in T]: string;
+} {
   const envs: { [Key in T]?: string } = {};
   keys.forEach((key) => {
     if (!isAllowUndefined && !Deno.env.has(key)) {

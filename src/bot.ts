@@ -18,27 +18,7 @@ type InferCallbackEvent<T extends CallbackEventType> = T extends "message"
   ? MessageCallbackEvent
   : Extract<CallbackEvent, { type: T }>;
 
-const createSignature = async (secret: string, body: string) => {
-  const encoder = new TextEncoder();
-  const keyBuffer = encoder.encode(secret);
-  const key = crypto.subtle.importKey(
-    "raw",
-    keyBuffer,
-    { name: "HMAC", hash: "SHA-256" },
-    true,
-    ["sign"],
-  );
-
-  const bodyBuffer = encoder.encode(body);
-  const hmac = await crypto.subtle.sign("HMAC", await key, bodyBuffer.buffer);
-  return encodeBase64(hmac);
-};
-
 export class Bot {
-  private handlers: {
-    [K in CallbackEventType]?: CallbackEventHandler<InferCallbackEvent<K>>;
-  };
-
   constructor(
     private readonly id: string,
     private readonly secret: string,
@@ -46,6 +26,10 @@ export class Bot {
   ) {
     this.handlers = {};
   }
+
+  private handlers: {
+    [K in CallbackEventType]?: CallbackEventHandler<InferCallbackEvent<K>>;
+  };
 
   /**
    * `.send()` allows you to send a message from Bot.
@@ -86,13 +70,29 @@ export class Bot {
     this.handlers[type] = handler as any;
   }
 
-  private dispatch<T extends CallbackEvent>(e: T) {
-    const handler = this.handlers[e.type];
+  private dispatch<
+    T extends CallbackEvent,
+    U extends CallbackEventHandler<T> | undefined,
+  >(event: T) {
+    const handler = this.handlers[event.type] as U;
     if (handler !== undefined) {
-      const ctx = new BotContext(e);
-      // deno-lint-ignore no-explicit-any
-      return handler(ctx as any);
+      return handler(new BotContext(event));
     }
+  }
+
+  private async createSignature(secret: string, body: string) {
+    const encoder = new TextEncoder();
+    const keyBuffer = encoder.encode(secret);
+    const key = crypto.subtle.importKey(
+      "raw",
+      keyBuffer,
+      { name: "HMAC", hash: "SHA-256" },
+      true,
+      ["sign"],
+    );
+    const bodyBuffer = encoder.encode(body);
+    const hmac = await crypto.subtle.sign("HMAC", await key, bodyBuffer.buffer);
+    return encodeBase64(hmac);
   }
 
   /**
@@ -129,7 +129,7 @@ export class Bot {
     }
 
     const requestBody = await request.text();
-    const signature = await createSignature(this.secret, requestBody);
+    const signature = await this.createSignature(this.secret, requestBody);
     if (signatureHeader !== signature) {
       return new Response("error", { status: 401 });
     }
