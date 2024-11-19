@@ -12,7 +12,7 @@ export type MessageResponse = {
 };
 
 export class BotContext<T extends CallbackEvent> {
-  constructor(public readonly e: T) {}
+  constructor(public readonly event: T) {}
 
   newResponse(
     destination: Destination,
@@ -35,20 +35,20 @@ export class BotContext<T extends CallbackEvent> {
   }
 
   by(): Destination {
-    return this.e.source.channelId === undefined ? "users" : "channels";
+    return this.event.source.channelId === undefined ? "users" : "channels";
   }
 
   id(): string {
-    return this.e.type === "message"
-      ? this.e.source.channelId ?? this.e.source.userId
-      : this.e.source.channelId;
+    return this.event.type === "message"
+      ? this.event.source.channelId ?? this.event.source.userId
+      : this.event.source.channelId;
   }
 
   type(): CallbackEventType {
-    return this.e.type;
+    return this.event.type;
   }
 
   timestamp(): string {
-    return this.e.issuedTime;
+    return this.event.issuedTime;
   }
 }

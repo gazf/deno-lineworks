@@ -1,4 +1,4 @@
-import { defaultAuthEnv, env } from "../src/env.ts";
+import { defaultAuthEnv, env } from "../src/mod.ts";
 import { Auth, Bot, type Destination } from "../src/mod.ts";
 import { Hono } from "jsr:@hono/hono";
 
@@ -31,11 +31,11 @@ await bot.send(
 
 // Register callback handler
 bot.on("message", (c) => {
-  if (c.e.content.type == "text") {
+  if (c.event.content.type == "text") {
     return c.reply({
       content: {
         type: "text",
-        text: `echo message: ${c.e.content.text}`,
+        text: `echo message: ${c.id()} -> "${c.event.content.text}"`,
       },
     });
   }

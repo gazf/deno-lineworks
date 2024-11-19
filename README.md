@@ -10,6 +10,8 @@ This package is for easy use of [LINE WORKS](https://line-works.com/).
 
 ## Basic usage
 
+### Bot
+
 ```typescript
 import { Auth, Bot } from "jsr:@gazf/deno-lineworks";
 
@@ -63,8 +65,8 @@ const bot = new Bot(
 );
 
 // Setup 'MessageCallback'
-bot.on("message", async (c) => {
-  await c.reply({
+bot.on("message", (c) => {
+  return c.reply({
     content: {
       type: "text",
       text: `echoback: ${c.e.content.text}`,
