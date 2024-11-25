@@ -1,4 +1,4 @@
-/** {@link https://developers.worksmobile.com/jp/docs/auth-jwt#issue-access-token-response-body} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/auth-jwt#issue-access-token-response-body} */
 export type IssueAccessTokenResponse = {
   access_token: string;
   refresh_token: string;
@@ -7,7 +7,7 @@ export type IssueAccessTokenResponse = {
   expires_in: number;
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/auth-scope} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/auth-scope} */
 export type Scope =
   | "openid"
   | "email"

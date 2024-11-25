@@ -1,4 +1,4 @@
-/** {@link https://developers.worksmobile.com/jp/docs/bot-callback} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-callback} */
 export type CallbackEvent =
   | MessageCallbackEvent
   | PostbackCallbackEvent
@@ -26,7 +26,7 @@ type MessageCallbackEventBase = {
   issuedTime: string;
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-callback-message#message-event-text} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-callback-message#message-event-text} */
 export type TextMessageCallbackEvent = MessageCallbackEventBase & {
   content: {
     type: "text";
@@ -35,7 +35,7 @@ export type TextMessageCallbackEvent = MessageCallbackEventBase & {
   };
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-callback-message#message-event-location} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-callback-message#message-event-location} */
 export type LocationMessageCallbackEvent = MessageCallbackEventBase & {
   content: {
     type: "location";
@@ -45,7 +45,7 @@ export type LocationMessageCallbackEvent = MessageCallbackEventBase & {
   };
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-callback-message#message-event-sticker} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-callback-message#message-event-sticker} */
 export type StickerMessageCallbackEvent = MessageCallbackEventBase & {
   content: {
     type: "sticker";
@@ -54,7 +54,7 @@ export type StickerMessageCallbackEvent = MessageCallbackEventBase & {
   };
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-callback-message#message-event-image} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-callback-message#message-event-image} */
 export type ImageMessageCallbackEvent = MessageCallbackEventBase & {
   content: {
     type: "image";
@@ -62,7 +62,7 @@ export type ImageMessageCallbackEvent = MessageCallbackEventBase & {
   };
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-callback-message#message-event-file} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-callback-message#message-event-file} */
 export type FileMessageCallbackEvent = MessageCallbackEventBase & {
   content: {
     type: "file";
@@ -70,7 +70,7 @@ export type FileMessageCallbackEvent = MessageCallbackEventBase & {
   };
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-callback-postback} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-callback-postback} */
 export type PostbackCallbackEvent = {
   type: "postback";
   source: {
@@ -82,7 +82,7 @@ export type PostbackCallbackEvent = {
   data: string;
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-callback-join} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-callback-join} */
 export type JoinCallbackEvent = {
   type: "join";
   source: {
@@ -92,7 +92,7 @@ export type JoinCallbackEvent = {
   issuedTime: string;
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-callback-leave} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-callback-leave} */
 export type LeaveCallbackEvent = {
   type: "leave";
   source: {
@@ -102,7 +102,7 @@ export type LeaveCallbackEvent = {
   issuedTime: string;
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-callback-joined} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-callback-joined} */
 export type JoinedCallbackEvent = {
   type: "joined";
   source: {
@@ -113,7 +113,7 @@ export type JoinedCallbackEvent = {
   members: string[];
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-callback-left} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-callback-left} */
 export type LeftCallbackEvent = {
   type: "left";
   source: {

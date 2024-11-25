@@ -1,4 +1,4 @@
-/** {@link(https://developers.worksmobile.com/jp/docs/calendar-default-event-user-list#Response)} */
+/** @see {@link(https://developers.worksmobile.com/jp/docs/calendar-default-event-user-list#Response)} */
 export type EventResponse = {
   events: [{
     eventComponents: Event[];
@@ -6,7 +6,7 @@ export type EventResponse = {
   }];
 };
 
-/** {@link(https://developers.worksmobile.com/jp/docs/calendar-default-event-user-list#Event)} */
+/** @see {@link(https://developers.worksmobile.com/jp/docs/calendar-default-event-user-list#Event)} */
 export type Event = {
   eventId: string;
   createdTime: {

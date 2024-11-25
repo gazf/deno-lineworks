@@ -24,7 +24,7 @@ await bot.send(
   {
     content: {
       type: "text",
-      text: `Hello ${botConfig.LINEWORKS_ID}`,
+      text: `Hello <m userId="${botConfig.LINEWORKS_ID}">`,
     },
   },
 );
@@ -35,7 +35,7 @@ bot.on("message", (c) => {
     return c.reply({
       content: {
         type: "text",
-        text: `echo message: ${c.id()} -> "${c.event.content.text}"`,
+        text: `echo message: <m userId="${c.id()}"> "${c.event.content.text}"`,
       },
     });
   }

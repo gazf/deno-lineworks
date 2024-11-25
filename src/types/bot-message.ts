@@ -1,15 +1,16 @@
 import type { Action } from "./bot-action.ts";
 
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-api#bot-message} */
 export type Destination = "users" | "channels";
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-send-content} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-content} */
 export type Message =
   | TextMessage
   | StickerMessage
   | ImageMessage
   | FlexMessage;
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-send-text} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-text} */
 export type TextMessage = {
   content: {
     type: "text";
@@ -18,7 +19,7 @@ export type TextMessage = {
   };
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-send-sticker} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-sticker} */
 export type StickerMessage = {
   content: {
     type: "sticker";
@@ -28,18 +29,18 @@ export type StickerMessage = {
   };
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-send-image} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-image} */
 export type ImageMessage = {
   content: {
     type: "image";
-    previwImageUrl?: string;
-    originalContentUrl?: string;
+    previwImageUrl?: `https://${string}`;
+    originalContentUrl?: `https://${string}`;
     fileId?: string;
     quickReply?: QuickReply;
   };
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-send-flex} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-flex} */
 export type FlexMessage = {
   content: {
     type: "flex";
@@ -48,7 +49,7 @@ export type FlexMessage = {
   };
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-bubble} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-bubble} */
 export type FlexBubble = {
   type: "bubble";
   size?: "nano" | "micro" | "kilo" | "mega" | "giga";
@@ -65,13 +66,13 @@ export type FlexBubble = {
   action?: Action;
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-carousel} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-carousel} */
 export type FlexCarousel = {
   type: "carousel";
   contents: FlexBubble[];
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-box} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-box} */
 export type FlexBox = {
   type: "box";
   layout: "horizontal" | "vertical" | "baseline";
@@ -113,7 +114,7 @@ export type FlexBox = {
   action?: Action;
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-button} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-button} */
 export type FlexButton = {
   type: "button";
   action: Action;
@@ -130,10 +131,10 @@ export type FlexButton = {
   gravity?: "top" | "bottom" | "center";
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-image} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-image} */
 export type FlexImage = {
   type: "image";
-  url: string;
+  url: `https://${string}`;
   flex?: number;
   margin?: "none" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
   position?: "relative" | "absolute";
@@ -160,10 +161,10 @@ export type FlexImage = {
   action?: Action;
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-icon} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-icon} */
 export type FlexIcon = {
   type: "icon";
-  url: string;
+  url: `https://${string}`;
   margin?: "none" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
   position?: "relative" | "absolute";
   offsetTop?: string | "none" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
@@ -184,7 +185,7 @@ export type FlexIcon = {
   aspectRatio?: string;
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-text} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-text} */
 export type FlexText = {
   type: "text";
   text?: string;
@@ -218,7 +219,7 @@ export type FlexText = {
   decoration?: "none" | "underline" | "line-through";
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-span} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-span} */
 export type FlexSpan = {
   type: "span";
   text: string;
@@ -239,26 +240,27 @@ export type FlexSpan = {
   decoration?: "none" | "underline" | "line-through";
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-separator} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-separator} */
 export type FlexSeparator = {
   type: "separator";
   margin?: "none" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
   color?: string;
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-filler} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-filler} */
 export type FlexFiller = {
   type: "filler";
   flex?: number;
 };
 
-/** {@link https://developers.worksmobile.com/jp/docs/bot-quickreply} */
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-quickreply} */
 export type QuickReply = {
   items: QuickReplyItem[];
 };
 
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-quickreply#quickreply-request} */
 export type QuickReplyItem = {
-  imageUrl?: string;
+  imageUrl?: `https://${string}`;
   imageResourceId?: string;
   action: Action;
 };
