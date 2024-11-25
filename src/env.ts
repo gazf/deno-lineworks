@@ -12,7 +12,7 @@ export function env<const T extends readonly string[]>(
   keys: T,
   allowUndefined: boolean = false,
 ): {
-  [Key in T[number]]: string
+  [Key in T[number]]: string;
 } {
   const rawEnv = Deno.env.toObject();
   return keys.reduce((acc, key: T[number]) => {
@@ -21,7 +21,7 @@ export function env<const T extends readonly string[]>(
     }
     acc[key] = rawEnv[key];
     return acc;
-  }, {} as {[Key in T[number]]: string} );
+  }, {} as { [Key in T[number]]: string });
 }
 
 /** Load default auth env.
