@@ -1,6 +1,6 @@
 {
   "name": "@gazf/deno-lineworks",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "license": "MIT",
   "exports": "./src/mod.ts",
   "publish": {
