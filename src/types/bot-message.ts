@@ -32,8 +32,8 @@ export type StickerMessage = {
 export type ImageMessage = {
   content: {
     type: "image";
-    previwImageUrl?: string;
-    originalContentUrl?: string;
+    previwImageUrl?: `https://${string}`;
+    originalContentUrl?: `https://${string}`;
     fileId?: string;
     quickReply?: QuickReply;
   };
@@ -133,7 +133,7 @@ export type FlexButton = {
 /** {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-image} */
 export type FlexImage = {
   type: "image";
-  url: string;
+  url: `https://${string}`;
   flex?: number;
   margin?: "none" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
   position?: "relative" | "absolute";
@@ -163,7 +163,7 @@ export type FlexImage = {
 /** {@link https://developers.worksmobile.com/jp/docs/bot-send-flex-icon} */
 export type FlexIcon = {
   type: "icon";
-  url: string;
+  url: `https://${string}`;
   margin?: "none" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
   position?: "relative" | "absolute";
   offsetTop?: string | "none" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
@@ -258,7 +258,7 @@ export type QuickReply = {
 };
 
 export type QuickReplyItem = {
-  imageUrl?: string;
+  imageUrl?: `https://${string}`;
   imageResourceId?: string;
   action: Action;
 };
