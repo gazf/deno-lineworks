@@ -1,4 +1,5 @@
 export type * from "./types/auth.ts";
+export type * from "./types/bot.ts";
 export type * from "./types/bot-action.ts";
 export type * from "./types/bot-message.ts";
 export type * from "./types/bot-callback-event.ts";
