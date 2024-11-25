@@ -2,26 +2,26 @@ import type { AuthEnv } from "./types.ts";
 
 /** This function reads environment variables using `Deno.env.get()`
  * @param keys Environment variable key names.
- * @param [isAllowUndefined=false] If false(default), an exception is raised when the environment variable is undefined.
+ * @param [allowUndefined=false] If false(default), an exception is raised when the environment variable is undefined.
  * @example
  * const e = env(["USER", "SHELL"]);
  * console.log(e.USER);
  * console.log(e.SHELL);
  */
-export function env<T extends string>(
-  keys: T[],
-  isAllowUndefined: boolean = false,
+export function env<const T extends readonly string[]>(
+  keys: T,
+  allowUndefined: boolean = false,
 ): {
-  [Key in T]: string;
+  [Key in T[number]]: string;
 } {
-  const envs: { [Key in T]?: string } = {};
-  keys.forEach((key) => {
-    if (!isAllowUndefined && !Deno.env.has(key)) {
-      throw new Error(`undefined env "${key}"`);
+  const rawEnv = Deno.env.toObject();
+  return keys.reduce((acc, key: T[number]) => {
+    if (!allowUndefined && rawEnv[key] === undefined) {
+      throw new ReferenceError(`Environment variable "${key}" is not defined.`);
     }
-    envs[key] = Deno.env.get(key);
-  });
-  return envs as { [Key in T]: string };
+    acc[key] = rawEnv[key];
+    return acc;
+  }, {} as { [Key in T[number]]: string });
 }
 
 /** Load default auth env.
