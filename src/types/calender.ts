@@ -1,3 +1,17 @@
+/** @see {@link https://developers.worksmobile.com/jp/docs/calendar-personals-user-list#CalendarPersonal} */
+export type CalendarParsonalUserList = {
+  calendarPersonals: Array<{
+    calendarId: string;
+    calendarName: string;
+    isShowOnLNBList: boolean;
+    displayOrder: number;
+    resourceLocation: number;
+  }>;
+  responseMetaData: {
+    nextCursor: string;
+  };
+};
+
 /** @see {@link(https://developers.worksmobile.com/jp/docs/calendar-default-event-user-list#Response)} */
 export type EventResponse = {
   events: [{
