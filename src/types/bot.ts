@@ -1,3 +1,4 @@
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-update-patch#Request-Body} */
 export type BotUpdate = {
   botName: string;
   photoUrl: `https://${string}`;
