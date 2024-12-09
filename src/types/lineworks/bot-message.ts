@@ -1,4 +1,5 @@
 import type { Action } from "./bot-action.ts";
+import type { LanguageCode } from "./language-code.ts";
 
 /** @see {@link https://developers.worksmobile.com/jp/docs/bot-api#bot-message} */
 export type Destination = "users" | "channels";
@@ -16,6 +17,10 @@ export type TextMessage = {
     type: "text";
     text: string;
     quickReply?: QuickReply;
+    i18nTexts?: {
+      language: LanguageCode;
+      text: string;
+    }[];
   };
 };
 
@@ -33,10 +38,148 @@ export type StickerMessage = {
 export type ImageMessage = {
   content: {
     type: "image";
-    previwImageUrl?: `https://${string}`;
-    originalContentUrl?: `https://${string}`;
+    previwImageUrl?: string;
+    originalContentUrl?: string;
     fileId?: string;
     quickReply?: QuickReply;
+  };
+};
+
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-file} */
+export type FileMessage = {
+  content: {
+    type: "file";
+    originalContentUrl?: string;
+    fileId?: string;
+  };
+};
+
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-link} */
+export type LinkMessage = {
+  content: {
+    type: "link";
+    contentText: string;
+    linkText: string;
+    link: string;
+    i18nContentTexts?: {
+      language: LanguageCode;
+      contentText: string;
+    }[];
+    i18nLinkTexts?: {
+      language: LanguageCode;
+      linkText: string;
+    }[];
+  };
+};
+
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-button} */
+export type ButtonTemplate = {
+  content: {
+    type: "button_template";
+    contentText: string;
+    i18nContentTexts?: {
+      language: LanguageCode;
+      contentText: string;
+    }[];
+    actions: Action[];
+  };
+};
+
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-list} */
+export type ListTemplate = {
+  content: {
+    type: "list_template";
+    coverData?: {
+      backgroundImageUrl?: string;
+      backgroundFileId?: string;
+      title?: string;
+      subtitle?: string;
+      i18nBackgroundImageUrls?: {
+        language: LanguageCode;
+        backgroundImageUrl: string;
+      }[];
+      i18nBackgroundFileIds?: {
+        language: LanguageCode;
+        backgroundFileId: string;
+      }[];
+      i18nTitles?: {
+        language: LanguageCode;
+        title: string;
+      }[];
+      i18nSubtitles?: {
+        language: LanguageCode;
+        subtitle: string;
+      }[];
+    };
+    elements: {
+      title?: string;
+      subtitle?: string;
+      originalContentUrl?: string;
+      fileId?: string;
+      action: Action;
+      i18nTitles?: {
+        language: LanguageCode;
+        title: string;
+      }[];
+      i18nSubtitles?: {
+        language: LanguageCode;
+        subtitle: string;
+      }[];
+      i18nOriginalContentUrls?: {
+        language: LanguageCode;
+        originalContentUrl: string;
+      }[];
+      i18nFileIds?: {
+        language: LanguageCode;
+        fileId: string;
+      }[];
+    }[];
+    actions: Action[][];
+  };
+};
+
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-carousel} */
+export type CarouselTemplate = {
+  content: {
+    type: "carousel";
+    imageAspectRatio?: "rectangle" | "square";
+    imageSize?: "cover" | "contain";
+    columns: {
+      originalContentUrl?: string;
+      fileId?: string;
+      title?: string;
+      text: string;
+      defaultAction?: Action;
+      actions: Action[];
+      i18nOriginalContentUrls?: {
+        language: LanguageCode;
+        originalContentUrl: string;
+      }[];
+      i18nFileIds?: {
+        language: LanguageCode;
+        fileId: string;
+      }[];
+    }[];
+  };
+};
+
+/** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-imagecarousel} */
+export type ImageCarouselTemplate = {
+  content: {
+    type: "image_carousel";
+    columns: {
+      originalContentUrl?: string;
+      fileId?: string;
+      action: Action;
+      i18nOriginalContentUrls?: {
+        language: LanguageCode;
+        originalContentUrl: string;
+      }[];
+      i18nFileIds?: {
+        language: LanguageCode;
+        fileId: string;
+      }[];
+    }[];
   };
 };
 
@@ -260,7 +403,7 @@ export type QuickReply = {
 
 /** @see {@link https://developers.worksmobile.com/jp/docs/bot-quickreply#quickreply-request} */
 export type QuickReplyItem = {
-  imageUrl?: `https://${string}`;
+  imageUrl?: string;
   imageResourceId?: string;
   action: Action;
 };
