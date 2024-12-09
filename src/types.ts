@@ -5,7 +5,7 @@ export type * from "./types/lineworks/bot-message.ts";
 export type * from "./types/lineworks/bot.ts";
 export type * from "./types/lineworks/calender.ts";
 export type * from "./types/lineworks/language-code.ts";
-export type * from "./types/lineworks/scope.ts"
+export type * from "./types/lineworks/scope.ts";
 
 export type AuthEnv = {
   readonly clientId: string;
