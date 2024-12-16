@@ -1,43 +1,43 @@
-import { defaultAuthEnv, env } from "../src/mod.ts";
-import { Auth, Bot, type Destination } from "../src/mod.ts";
+import {
+  Auth,
+  bind,
+  Bot,
+  BotMessageBuilder as Builder,
+  DEFAULT_CREDENTIAL_BINDINGS,
+  type Destination,
+} from "../src/mod.ts";
 import { Hono } from "jsr:@hono/hono";
 
 // Read envs
-const botConfig = env([
-  "LINEWORKS_BOT_ID",
-  "LINEWORKS_BOT_SECRET",
-  "LINEWORKS_DEST",
-  "LINEWORKS_ID",
-]);
+const botConfig = bind({
+  id: "LINEWORKS_BOT_ID",
+  secret: "LINEWORKS_BOT_SECRET",
+  dest: "LINEWORKS_DEST",
+  to: "LINEWORKS_ID",
+});
 
 // Create Bot instance
 const bot = new Bot(
-  botConfig.LINEWORKS_BOT_ID,
-  botConfig.LINEWORKS_BOT_SECRET,
-  new Auth(defaultAuthEnv(), ["bot"]),
+  botConfig.id,
+  botConfig.secret,
+  new Auth(bind(DEFAULT_CREDENTIAL_BINDINGS), ["bot"]),
 );
 
 // Send message
 await bot.send(
-  botConfig.LINEWORKS_DEST as Destination,
-  botConfig.LINEWORKS_ID,
-  {
-    content: {
-      type: "text",
-      text: `Hello <m userId="${botConfig.LINEWORKS_ID}">`,
-    },
-  },
+  botConfig.dest as Destination,
+  botConfig.to,
+  Builder.text(`Hello ${Builder.mention(botConfig.to)} !`),
 );
 
 // Register callback handler
 bot.on("message", (c) => {
   if (c.event.content.type == "text") {
-    return c.reply({
-      content: {
-        type: "text",
-        text: `echo message: <m userId="${c.id()}"> "${c.event.content.text}"`,
-      },
-    });
+    return c.reply(
+      Builder.text(
+        `echo message: ${Builder.mention(c.id())} "${c.event.content.text}"`,
+      ),
+    );
   }
 });
 

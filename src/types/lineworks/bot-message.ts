@@ -9,6 +9,10 @@ export type Message =
   | TextMessage
   | StickerMessage
   | ImageMessage
+  | FileMessage
+  | LinkMessage
+  | ButtonTemplate
+  | ListTemplate
   | FlexMessage;
 
 /** @see {@link https://developers.worksmobile.com/jp/docs/bot-send-text} */

@@ -1,6 +1,6 @@
-import type { AuthEnv } from "../../mod.ts";
+import type { AuthCredential } from "../../mod.ts";
 
-export const testEnv: AuthEnv = {
+export const testCredential: AuthCredential = {
   clientId: "DAMMY_CLIENT_ID",
   clientSecret: "DAMMY_CLIENT_SECRET",
   serviceAccount: "DAMMY_SERVICE_ACCOUNT",
