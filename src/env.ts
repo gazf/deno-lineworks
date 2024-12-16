@@ -1,55 +1,40 @@
-import type { AuthEnv } from "./types.ts";
+import type { AuthCredential } from "./types.ts";
+
+/** Default bindings the environment valiables */
+export const DEFAULT_CREDENTIAL_BINDINGS: AuthCredential = {
+  clientId: "LINEWORKS_CLIENT_ID",
+  clientSecret: "LINEWORKS_CLIENT_SECRET",
+  serviceAccount: "LINEWORKS_SERVICE_ACCOUNT",
+  privateKey: "LINEWORKS_PRIVATE_KEY",
+} as const;
 
 /** This function reads environment variables using `Deno.env.get()`
- * @param keys Environment variable key names.
+ * @param bindings Environment variable key/value pairs.
  * @param [allowUndefined=false] If false(default), an exception is raised when the environment variable is undefined.
  * @example
- * const e = env(["USER", "SHELL"]);
- * console.log(e.USER);
- * console.log(e.SHELL);
- */
-export function env<const T extends readonly string[]>(
-  keys: T,
-  allowUndefined: boolean = false,
-): {
-  [Key in T[number]]: string;
-} {
-  const rawEnv = Deno.env.toObject();
-  return keys.reduce((acc, key: T[number]) => {
-    if (!allowUndefined && rawEnv[key] === undefined) {
-      throw new ReferenceError(`Environment variable "${key}" is not defined.`);
-    }
-    acc[key] = rawEnv[key];
-    return acc;
-  }, {} as { [Key in T[number]]: string });
-}
-
-/** Load default auth env.
- *
- * Internally using `env()`
- *
- * This function is similar to the following code.
- *
  * ```ts
- * return {
- *   clientId: Deno.env.get("LINEWORKS_CLIENT_ID"),
- *   clientSecret: Deno.env.get("LINEWORKS_CLIENT_SECRET"),
- *   serviceAccount: Deno.env.get("LINEWORKS_SERVICE_ACCOUNT"),
- *   privateKey: Deno.env.get("LINEWORKS_PRIVATE_KEY"),
- * } as AuthEnv;
+ * const bidings = {
+ *   user: "USER",
+ *   shell: "SHELL"
+ * } as const;
+ *
+ * const e = bind(bindings);
+ * console.log(e.user); // == console.log(Deno.env.get("USER"));
+ * console.log(e.shell); // == console.log(Deno.env.get("SHELL"));
  * ```
  */
-export function defaultAuthEnv(): AuthEnv {
-  const e = env([
-    "LINEWORKS_CLIENT_ID",
-    "LINEWORKS_CLIENT_SECRET",
-    "LINEWORKS_SERVICE_ACCOUNT",
-    "LINEWORKS_PRIVATE_KEY",
-  ]);
-  return {
-    clientId: e.LINEWORKS_CLIENT_ID,
-    clientSecret: e.LINEWORKS_CLIENT_SECRET,
-    serviceAccount: e.LINEWORKS_SERVICE_ACCOUNT,
-    privateKey: e.LINEWORKS_PRIVATE_KEY,
-  };
+export function bind<const T extends { readonly [key: string]: string }>(
+  bindings: T,
+  allowUndefined: boolean = false,
+): { [P in keyof T]: string } {
+  const rawEnv = Deno.env.toObject();
+  return Object.keys(bindings).reduce((acc, key) => {
+    if (!allowUndefined && rawEnv[bindings[key]] === undefined) {
+      throw new ReferenceError(
+        `Environment variable "${bindings[key]}" is not defined.`,
+      );
+    }
+    acc[key as keyof T] = rawEnv[bindings[key]];
+    return acc;
+  }, {} as { [P in keyof T]: string });
 }

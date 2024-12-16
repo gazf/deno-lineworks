@@ -1,5 +1,9 @@
 import { createJWT } from "./jwt.ts";
-import type { AuthEnv, IssueAccessTokenResponse, Scope } from "./types.ts";
+import type {
+  AuthCredential,
+  IssueAccessTokenResponse,
+  Scope,
+} from "./types.ts";
 import { AUTH_TOKEN_ENDPOINT, REVOKE_TOKEN_ENDPOINT } from "./endpoints.ts";
 
 export type AuthInterface = {
@@ -46,7 +50,7 @@ export class Auth implements AuthInterface {
   private c?: AuthContext;
 
   constructor(
-    private readonly env: AuthEnv,
+    private readonly credential: AuthCredential,
     private readonly scopes: Scope[],
   ) {}
 
@@ -92,10 +96,10 @@ export class Auth implements AuthInterface {
   /** {@link https://developers.worksmobile.com/jp/docs/auth-oauth#issue-access-token} */
   private async issueToken() {
     const response = await this.postRequest(AUTH_TOKEN_ENDPOINT, {
-      assertion: await createJWT(this.env),
+      assertion: await createJWT(this.credential),
       grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
-      client_id: this.env.clientId,
-      client_secret: this.env.clientSecret,
+      client_id: this.credential.clientId,
+      client_secret: this.credential.clientSecret,
       scope: this.scopes.join(" "),
     });
 
@@ -114,8 +118,8 @@ export class Auth implements AuthInterface {
     const response = await this.postRequest(AUTH_TOKEN_ENDPOINT, {
       refresh_token: this.c.refreshToken,
       grant_type: "refresh_token",
-      client_id: this.env.clientId,
-      client_secret: this.env.clientSecret,
+      client_id: this.credential.clientId,
+      client_secret: this.credential.clientSecret,
     });
 
     if (!response.ok) return undefined;
@@ -131,8 +135,8 @@ export class Auth implements AuthInterface {
     if (this.c === undefined) return;
 
     const response = await this.postRequest(REVOKE_TOKEN_ENDPOINT, {
-      client_id: this.env.clientId,
-      client_secret: this.env.clientSecret,
+      client_id: this.credential.clientId,
+      client_secret: this.credential.clientSecret,
       token: this.c.refreshToken,
     });
 

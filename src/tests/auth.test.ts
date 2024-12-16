@@ -1,11 +1,11 @@
 import { assertEquals, stub } from "./deps-test.ts";
-import { testEnv } from "./testdata/test.env.ts";
+import { testCredential } from "./testdata/test.env.ts";
 
 import { Auth, type Scope } from "../mod.ts";
 
 Deno.test("Auth Class test", async (t) => {
   const scopes: Scope[] = ["bot", "bot.read"];
-  const auth = new Auth(testEnv, scopes);
+  const auth = new Auth(testCredential, scopes);
 
   const mockAccessToken = {
     access_token: "DAMMY_ACCESS_TOKEN",

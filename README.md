@@ -45,7 +45,7 @@ await bot.send("channels", "channel_id", {
 });
 ```
 
-## Echoback (Use Hono)
+### Bot Echoback (Use Hono)
 
 ```typescript
 import { Auth, Bot } from "jsr:@gazf/deno-lineworks";
